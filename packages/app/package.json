@@ -1,0 +1,14 @@
+{
+  "name": "@mobber/app",
+  "version": "1.0.0",
+  "main": "index.js",
+  "license": "MIT",
+  "private": true,
+  "dependencies": {
+    "cross-env": "^5.2.0",
+    "electron": "^6.0.7",
+    "electron-is-dev": "^1.1.0",
+    "ts-loader": "^6.0.4",
+    "typescript": "^3.6.2"
+  }
+}

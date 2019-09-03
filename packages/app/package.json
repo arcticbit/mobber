@@ -8,7 +8,9 @@
     "cross-env": "^5.2.0",
     "electron": "^6.0.7",
     "electron-is-dev": "^1.1.0",
+    "electron-reloader": "^0.3.0",
     "ts-loader": "^6.0.4",
+    "ts-node": "^8.3.0",
     "typescript": "^3.6.2"
   }
 }

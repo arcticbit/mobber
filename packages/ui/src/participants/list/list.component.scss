@@ -1,0 +1,46 @@
+$rowHeight: 16px;
+
+.persons {
+    .person {
+        background: #fefefe;
+        box-sizing: border-box;
+        font-size: $rowHeight; 
+        line-height: $rowHeight;
+        display: flex;
+        flex-direction: row;
+        margin: 0;
+        margin: 5px;
+        padding: 5px 2px 0 2px;
+        border-radius: 2px;
+        .name,
+        .arrange,
+        .actions {
+            flex: 1;
+        }
+        .actions {
+            padding: 0 2px 5px 0;
+        }
+
+        .arrange, .name {
+            padding: 2px;
+        }
+        .arrange {
+            max-width: $rowHeight;
+        }
+
+        .actions {
+            max-width: 100px;
+            button {
+                padding: 2px 2px 0 2px;
+                border-radius: 2px;
+                font-size: $rowHeight;
+                margin-left: 2px;
+                border: 0;
+                outline: 'none';
+                cursor: pointer;
+                background: #fff;
+            }
+            text-align: right
+        }
+    }
+}

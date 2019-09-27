@@ -18,12 +18,8 @@ export class MobberApp {
         })
     }
 
-    private createTray() {
-        
-    }
-
     createWindow() {
-        this.window = new BrowserWindow({
+        const options = {
             width: 300,
             height: 300,
             show: true,
@@ -35,24 +31,27 @@ export class MobberApp {
                 backgroundThrottling: false
             },
             skipTaskbar: true,
-        });
-        const trayBounds = this.tray.getBounds();
-        this.window.setPosition(Math.round(trayBounds.x - (trayBounds.width / 2)), trayBounds.y);
+        };
+
+        this.window = new BrowserWindow(options);
         this.window.loadURL('http://localhost:3000')
         this.window.show();
-        this.window.on('blur', () => {
-            this.window.hide();
-        })
+        this.window.on('blur', () => this.window.hide());
     }
 
-    toggleInterface() {
+    public toggleInterface() {
         if (this.window.isVisible()) {
-            console.log('hiding');
             this.window.hide();
-        } else {
-            console.log('showing');
-            this.window.show();
-            this.window.focus();
+            return;
         }
+        this.recalculatePosition();
+        this.window.show();
+        this.window.focus();
+    }
+
+    private recalculatePosition() {
+        const { x, y, width } = this.tray.getBounds();
+        const newX = Math.round(x - (width / 2));
+        this.window.setPosition(newX, y);
     }
 }

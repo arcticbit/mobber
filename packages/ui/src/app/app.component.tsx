@@ -1,16 +1,28 @@
 import React, { Component } from 'react';
-import './App.css';
-import { Participants } from './participants/list/list.component';
-import { styles } from './App.styles';
-import { initialState } from './App.state';
+
+import { Participants } from '../participants/list/list.component';
+import { styles } from './app.styles';
+import { initialState } from './app.state';
+
+import { IMobberState } from "../../../model/mobber-state.model";
+import { IPerson } from '../../../model/person.model';
+import { MdPlusOne } from 'react-icons/md';
+
+const { ipcRenderer } = window.require('electron');
 
 export class App extends Component<any, any> {
-
+  
   state = initialState;
   
   componentDidMount() {
-    const state = localStorage.getItem('state');
-    this.setState(state ? JSON.parse(state) : this.state)
+    // const state = localStorage.getItem('state');
+    ipcRenderer.on('state-update', (_event: any, state: IMobberState) => {
+      this.setState({
+        ...state,
+        form: this.state.form,
+      });
+    });
+    ipcRenderer.send('ready', null);
   }
 
   render() {
@@ -23,6 +35,7 @@ export class App extends Component<any, any> {
             data={this.state.persons}
             onChange={this.handleChange}
             onDelete={this.handleDelete}
+            onDriverPromotion={this.handleDriverPromotion}
           />
         </div>
         <div style={styles.form}>
@@ -38,11 +51,15 @@ export class App extends Component<any, any> {
             style={styles.formSubmitButton}
             type="button"
             onClick={this.handleFormSubmit}>
-            +
+            <MdPlusOne/>
           </button>
         </div>
       </div>
     )
+  }
+
+  private handleDriverPromotion(person: IPerson) {
+    ipcRenderer.send('new-driver', person.name);
   }
 
   private handleFormKeydown = (e: any) => {
@@ -60,16 +77,15 @@ export class App extends Component<any, any> {
   }
 
   private handleFormSubmit = () => {
+    const newParticipant: IPerson = {
+      name: this.state.form.input,
+      active: true,
+      language: "Swedish-Pro" as any,
+      scroll: "Natural" as any
+    };
+    ipcRenderer.send('new-participant', newParticipant);
     this.setState({
       ...this.state,
-      persons: [
-        ...this.state.persons,
-        {
-          name: this.state.form.input,
-          active: true,
-          layout: this.state.form.layout,
-        },
-      ],
       form: {
         input: '',
         layout: 'SE',
@@ -88,13 +104,12 @@ export class App extends Component<any, any> {
   }
 
   private handleChange = (item: any) => {
-
     const persons = [...this.state.persons];
     const person: any = persons.find(x => x.name === item.name);
     person.active = !person.active;
     localStorage.setItem('state', JSON.stringify(this.state));
-
-    this.setState({ persons });
+    this.setState({
+      persons });
   }
 
 }

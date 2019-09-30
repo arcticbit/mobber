@@ -13,6 +13,7 @@ export class Participants extends React.Component<any, any> {
                             person={person}
                             onChange={this.props.onChange}
                             onDelete={this.props.onDelete}
+                            onDriverPromotion={this.props.onDriverPromotion}
                             isDriving={i === 0}
                         />))
                 }

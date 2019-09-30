@@ -1,6 +1,6 @@
 import { exec } from "child_process";
 import { exists } from "fs";
-import { KeyboardLayout } from "./keyboard.enum";
+import { KeyboardLayout } from "../../../model/keyboard.enum";
 
 export class Keyboard {
   constructor() {

@@ -55,7 +55,7 @@ export class Participant extends React.Component<IParticipantProps> {
     private renderOrderButton(person: any) {
         return this.props.isDriving
             ? <MdStar style={styles.driverIcon} />
-            : <button type="button" onClick={() => this.props.onChange(person)}>
+            : <button type="button" onClick={() => this.props.onDriverPromotion(person)}>
                 <MdMoveUp />
             </button>;
     }

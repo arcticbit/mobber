@@ -61,6 +61,10 @@ export class MobberApp {
       this.state.addPerson(person);
       this.pushState();
     });
+    ipcMain.on("remove-participant", (_event, person: IPerson) => {
+      this.state.removePerson(person);
+      this.pushState();
+    });
     ipcMain.on("new-driver", (_event, driverName: string) => {
       console.log("renderer: new-driver ", driverName);
       this.state.setDriverByName(driverName);

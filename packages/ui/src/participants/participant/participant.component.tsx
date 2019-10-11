@@ -1,12 +1,13 @@
 import React from "react";
 import {
-    MdMenu,
     MdDelete,
     MdCheck,
     MdClose,
     MdStar,
     MdVerticalAlignTop as MdMoveUp,
 } from "react-icons/md";
+
+import dragIcon from '../../drag.icon.png';
 
 import { IParticipantProps } from "./participant.props";
 import { styles } from './participant.style';
@@ -15,11 +16,11 @@ export class Participant extends React.Component<IParticipantProps> {
     render() {
         const { person }: any = this.props;
         return (
-            <div className="person" key={person.name}>
+            <div className="person" key={person.name} style={{  ...(this.props.isDriving ? { fontWeight: 'bold', fontStyle: 'italic'}: {})}}>
                 <div className="arrange" style={{ cursor: 'move' }}>
-                    <MdMenu></MdMenu>
+                    <img src={dragIcon} style={{height: '.6em', marginBottom: '1px'}}/>
                 </div>
-                <div className="name">
+                <div className="name" style={{fontSize: '.8em', marginLeft: '1em'}}>
                     {person.name}
                 </div>
                 <div className="actions">

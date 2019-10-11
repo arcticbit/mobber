@@ -18,6 +18,10 @@ export class State {
     });
   }
 
+  public removePerson(person: IPerson) {
+    this.state.persons = this.state.persons.filter(p => p.name !== person.name);
+  }
+
   public setDriverByName(name: string) {
     const driver = this.state.persons.find(x => x.name === name);
     const rest = this.state.persons.filter(x => x.name !== name);

@@ -8,14 +8,17 @@ import { IMobberState } from "../../../model/mobber-state.model";
 import { IPerson } from '../../../model/person.model';
 import { MdPlusOne } from 'react-icons/md';
 
+import { Api } from './api';
+
 const { ipcRenderer } = window.require('electron');
 
 export class App extends Component<any, any> {
   
   state = initialState;
-  
+  api = new Api();
+
   componentDidMount() {
-    // const state = localStorage.getItem('state');
+
     ipcRenderer.on('state-update', (_event: any, state: IMobberState) => {
       this.setState({
         ...state,
@@ -58,9 +61,9 @@ export class App extends Component<any, any> {
     )
   }
 
-  private handleDriverPromotion(person: IPerson) {
-    ipcRenderer.send('new-driver', person.name);
-  }
+  private readonly handleDriverPromotion = (person: IPerson) => {
+    this.api.promote(person);
+  };
 
   private handleFormKeydown = (e: any) => {
     if (e.key.toLowerCase() !== 'enter') {
@@ -69,11 +72,8 @@ export class App extends Component<any, any> {
     this.handleFormSubmit();
   }
 
-  private handleDelete = (e: any) => {
-    this.setState({
-      ...this.state,
-      persons: this.state.persons.filter(x => x.name !== e.name)
-    })
+  private handleDelete = (person: IPerson) => {
+    this.api.remove(person);
   }
 
   private handleFormSubmit = () => {
@@ -83,14 +83,8 @@ export class App extends Component<any, any> {
       language: "Swedish-Pro" as any,
       scroll: "Natural" as any
     };
-    ipcRenderer.send('new-participant', newParticipant);
-    this.setState({
-      ...this.state,
-      form: {
-        input: '',
-        layout: 'SE',
-      }
-    });
+    this.api.add(newParticipant);
+    
   }
 
   private handleFormChange = (e: any) => {
@@ -104,9 +98,16 @@ export class App extends Component<any, any> {
   }
 
   private handleChange = (item: any) => {
+
     const persons = [...this.state.persons];
-    const person: any = persons.find(x => x.name === item.name);
+    const person = persons.find(x => x.name === item.name);
+
+    if (person == null) {
+      throw new Error('not impl');
+    }
+
     person.active = !person.active;
+
     localStorage.setItem('state', JSON.stringify(this.state));
     this.setState({
       persons });

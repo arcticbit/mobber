@@ -23,7 +23,6 @@ To quote [Wikipedia](https://wikipedia.org):
 * Non-intrusive time tracking
 * Driver change notifications
 * Break planning
-* Flagging participants as active/idle
 
 #### Configuration
 * Scroll direction

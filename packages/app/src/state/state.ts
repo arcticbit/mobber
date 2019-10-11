@@ -12,74 +12,69 @@ export class State {
   }
 
   public addPerson(person: IPerson) {
-    if (
-      this.state.persons.some(
-        p => p.name.toLowerCase() === person.name.toLowerCase()
-      )
-    ) {
+    if (this.hasPerson(person)) {
       return;
     }
+
+    console.log("adding a person", person);
     this.state.persons.push({
       ...person,
       scroll: ScrollDirection.Natural
     });
+    this.parent.pushState();
+  }
+
+  private hasPerson(person: IPerson) {
+    return this.state.persons.some(
+      p => p.name.toLowerCase() === person.name.toLowerCase()
+    );
   }
 
   public removePerson(person: IPerson) {
     this.state.persons = this.state.persons.filter(p => p.name !== person.name);
+    this.parent.pushState();
   }
 
   public setDriverByName(name: string) {
     const driver = this.state.persons.find(x => x.name === name);
     const rest = this.state.persons.filter(x => x.name !== name);
     this.state.persons = [driver, ...rest];
+    this.parent.pushState();
   }
 
   public next() {
     const previousDriver = this.state.persons.shift();
     this.state.persons.push(previousDriver);
+    const driver = this.state.persons[0];
+    this.startNewDriverSession();
   }
+  private resetTimeLeft() {
+    this.parent.timeLeft = 7 * 60;
+  }
+
   public previous() {
     const previousDriver = this.state.persons.pop();
     this.state.persons.unshift(previousDriver);
+    this.startNewDriverSession();
   }
 
-  public toggle(person: IPerson) {
-    const item = this.state.persons.find(p => p.name === person.name);
-    item.active = !item.active;
+  startNewDriverSession() {
+    this.resetTimeLeft();
+    this.parent.keyboard.switchLayout(this.state.persons[0].language);
+    this.parent.pushState();
   }
 
   private state: IMobberState = {
     persons: [
       {
-        name: "Simon",
-        active: true,
-        language: KeyboardLayout.Swedish,
-        scroll: ScrollDirection.Natural
-      },
-      {
-        name: "Jonas",
-        active: true,
-        language: KeyboardLayout.Swedish,
-        scroll: ScrollDirection.Inverted
-      },
-      {
-        name: "Kim",
-        active: true,
-        language: KeyboardLayout.Swedish,
-        scroll: ScrollDirection.Inverted
-      },
-      {
         name: "Daniel",
-        active: false,
         language: KeyboardLayout.English,
         scroll: ScrollDirection.Natural
       },
       {
-        name: "Martin",
-        active: true,
-        language: KeyboardLayout.English,
-        scroll: ScrollDirection.Inverted
+        name: "Simon",
+        language: KeyboardLayout.Swedish,
+        scroll: ScrollDirection.Natural
       }
     ]
   };

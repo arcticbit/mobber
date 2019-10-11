@@ -1,12 +1,12 @@
 import { globalShortcut } from "electron";
 
-type hotkey = { key: string; action: () => void };
+type hotkey = { keys: string; action: () => void };
 
 export class Hotkeys {
   registerHotkeys = (map: hotkey[]) =>
-    map.forEach(entry => this.registerHotkey(entry.key, entry.action));
+    map.forEach(entry => this.registerHotkey(entry.keys, entry.action));
 
   registerHotkey(key: string, action: () => void) {
-    globalShortcut.register(`CommandOrControl+Shift+${key}`, action);
+    globalShortcut.register(key, action);
   }
 }

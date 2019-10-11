@@ -1,6 +1,7 @@
 $rowHeight: 16px;
 
 .persons {
+    
     .person {
         background: #fefefe;
         box-sizing: border-box;
@@ -8,10 +9,10 @@ $rowHeight: 16px;
         line-height: $rowHeight;
         display: flex;
         flex-direction: row;
-        margin: 0;
-        margin: 5px;
+        margin: 1px 10px;
         padding: 5px 2px 0 2px;
-        border-radius: 2px;
+        border: 1px #000;
+
         .name,
         .arrange,
         .actions {

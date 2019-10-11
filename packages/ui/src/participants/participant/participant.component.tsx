@@ -31,7 +31,7 @@ export class Participant extends React.Component<IParticipantProps> {
                     <button
                         style={this.getStatusStyle(person)}
                         type="button"
-                        onClick={this.props.onChange}
+                        onClick={() => this.props.onToggleActive(person)}
                     >
                         {this.renderStatusButton(person)}
                     </button>

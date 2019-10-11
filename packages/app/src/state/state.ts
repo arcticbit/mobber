@@ -12,6 +12,13 @@ export class State {
   }
 
   public addPerson(person: IPerson) {
+    if (
+      this.state.persons.some(
+        p => p.name.toLowerCase() === person.name.toLowerCase()
+      )
+    ) {
+      return;
+    }
     this.state.persons.push({
       ...person,
       scroll: ScrollDirection.Natural
@@ -35,6 +42,11 @@ export class State {
   public previous() {
     const previousDriver = this.state.persons.pop();
     this.state.persons.unshift(previousDriver);
+  }
+
+  public toggle(person: IPerson) {
+    const item = this.state.persons.find(p => p.name === person.name);
+    item.active = !item.active;
   }
 
   private state: IMobberState = {

@@ -11,7 +11,7 @@ export class Participants extends React.Component<any, any> {
                    .map((person: any, i: number) => (
                         <Participant
                             person={person}
-                            onChange={this.props.onChange}
+                            onToggleActive={this.props.onToggleActive}
                             onDelete={this.props.onDelete}
                             onDriverPromotion={this.props.onDriverPromotion}
                             isDriving={i === 0}

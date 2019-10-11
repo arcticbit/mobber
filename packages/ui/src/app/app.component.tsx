@@ -36,7 +36,7 @@ export class App extends Component<any, any> {
         <div style={styles.autoFlex}>
           <Participants
             data={this.state.persons}
-            onChange={this.handleChange}
+            onToggleActive={this.handleToggleActive}
             onDelete={this.handleDelete}
             onDriverPromotion={this.handleDriverPromotion}
           />
@@ -83,6 +83,7 @@ export class App extends Component<any, any> {
       language: "Swedish-Pro" as any,
       scroll: "Natural" as any
     };
+    this.setState({...this.state, form: { input: ''}})
     this.api.add(newParticipant);
     
   }
@@ -97,20 +98,8 @@ export class App extends Component<any, any> {
     });
   }
 
-  private handleChange = (item: any) => {
-
-    const persons = [...this.state.persons];
-    const person = persons.find(x => x.name === item.name);
-
-    if (person == null) {
-      throw new Error('not impl');
-    }
-
-    person.active = !person.active;
-
-    localStorage.setItem('state', JSON.stringify(this.state));
-    this.setState({
-      persons });
+  private handleToggleActive = (person: IPerson) => {
+    this.api.toggle(person);
   }
 
 }

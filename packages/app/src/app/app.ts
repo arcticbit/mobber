@@ -61,6 +61,10 @@ export class MobberApp {
       this.state.addPerson(person);
       this.pushState();
     });
+    ipcMain.on("toggle-participant", (_event, person: IPerson) => {
+      this.state.toggle(person);
+      this.pushState();
+    });
     ipcMain.on("remove-participant", (_event, person: IPerson) => {
       this.state.removePerson(person);
       this.pushState();

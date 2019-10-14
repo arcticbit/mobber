@@ -1,8 +1,6 @@
 export const initialState = {
-  form: {
-    input: "",
-    layout: "SE"
-  },
+  timeLeft: 0,
+  timePerRound: 0,
   persons: [
     { name: "Simme", layout: "SE" },
     { name: "Danny", layout: "US" },

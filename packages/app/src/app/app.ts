@@ -1,4 +1,4 @@
-import { app, BrowserWindow, App, ipcMain } from "electron";
+import { app, BrowserWindow, App, ipcMain, Notification } from "electron";
 import { MobberTray } from "../tray/tray.component";
 import { Hotkeys } from "../hotkeys/hotkeys.service";
 import { State } from "../state/state";
@@ -14,7 +14,6 @@ export class MobberApp {
   keyboard: Keyboard;
   state: State;
   events: Events;
-  timeLeft = 7 * 60;
   isPaused = false;
 
   constructor() {
@@ -80,6 +79,11 @@ export class MobberApp {
         keys: "CommandOrControl+Shift+F3",
         action: () => {
           this.isPaused = !this.isPaused;
+          const notif = new Notification({
+            title: "Title",
+            body: "Lorem Ipsum Dolor Sit Amet"
+          });
+          notif.show();
         }
       },
       {
@@ -102,22 +106,22 @@ export class MobberApp {
       return;
     }
 
-    this.timeLeft--;
+    this.state.decreaseTimeLeft();
+    const timeLeft = this.state.getTimeLeft();
 
-    const minutes = Math.floor(this.timeLeft / 60);
-    const seconds = Math.floor(this.timeLeft - minutes * 60);
-
-    console.log(this.timeLeft, minutes, seconds);
+    const minutes = Math.floor(timeLeft / 60);
+    const seconds = Math.floor(timeLeft - minutes * 60);
 
     const driverName = this.state.get().persons[0].name;
     const title = `[${minutes
       .toString()
       .padStart(2, "0")}:${seconds.toString().padStart(2, "0")}] ${driverName}`;
-    if (this.timeLeft <= 0) {
+    if (timeLeft <= 0) {
       this.state.next();
-      this.timeLeft = 10;
+      this.state.resetTimeLeft();
     }
     this.tray.setTitle(title);
+    this.pushState();
   }
 
   public pushState() {

@@ -1,5 +1,6 @@
 import { IPerson } from "./person.model";
 export interface IMobberState {
-  current?: IPerson;
+  timeLeft: number;
+  timePerRound: number;
   persons: IPerson[];
 }

@@ -28,7 +28,6 @@ export class App extends Component<any, any> {
     ipcRenderer.on('state-update', (_event: any, state: IMobberState) => {
       this.setState({
         ...state,
-        form: this.state.form,
       });
     });
     ipcRenderer.send('ready', null);
@@ -42,7 +41,7 @@ export class App extends Component<any, any> {
     return (
       <div className="App-header" style={styles.wrapper}>
         <div style={{...styles.autoFlex}}>
-          <Driver data={driver} />
+          <Driver data={driver} timeLeft={this.state.timeLeft} timePerRound={this.state.timePerRound } />
         </div>
         <div style={styles.autoFlex}>
           <Participants

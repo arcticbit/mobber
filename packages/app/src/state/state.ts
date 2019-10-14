@@ -5,6 +5,14 @@ import { MobberApp } from "../app/app";
 import { IPerson } from "../../../model/person.model";
 
 export class State {
+  public getTimeLeft() {
+    return this.state.timeLeft;
+  }
+
+  public resetTimeLeft() {
+    this.state.timeLeft = this.state.timePerRound;
+  }
+
   constructor(private readonly parent: MobberApp) {}
 
   public get(): IMobberState {
@@ -48,9 +56,6 @@ export class State {
     const driver = this.state.persons[0];
     this.startNewDriverSession();
   }
-  private resetTimeLeft() {
-    this.parent.timeLeft = 7 * 60;
-  }
 
   public previous() {
     const previousDriver = this.state.persons.pop();
@@ -64,7 +69,13 @@ export class State {
     this.parent.pushState();
   }
 
+  public decreaseTimeLeft() {
+    this.state.timeLeft--;
+  }
+
   private state: IMobberState = {
+    timeLeft: 7 * 60,
+    timePerRound: 7 * 60,
     persons: [
       {
         name: "Daniel",

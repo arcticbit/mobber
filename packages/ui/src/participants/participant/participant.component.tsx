@@ -9,9 +9,10 @@ import seFlag from '../../assets/se-flag.png';
 export class Participant extends React.Component<IParticipantProps> {
   render() {
     const { person } = this.props;
+    const currentDriverGradient = '-webkit-linear-gradient(top, #ffffff 0%, #f9e9d6 100%)';
     const personCard = {
       fontStyle: 'italic',
-      background: this.props.isCurrentDriver ? '#ff00ff' : '#fff'
+      background: this.props.isCurrentDriver ? currentDriverGradient : '#fff'
     };
     return (
       <div className="person" key={person.name} style={personCard}>

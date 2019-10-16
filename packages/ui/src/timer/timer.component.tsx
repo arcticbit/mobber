@@ -1,5 +1,4 @@
-import React, { Component } from "react";
-import { number } from "prop-types";
+import React, { Component } from 'react';
 
 export interface ITimerProps {
   onTimerChange: (e: any) => void;
@@ -17,28 +16,27 @@ interface ITimerState {
 
 const styles = {
   minuteChanger: {
-      outline: 0,
-      border: 0,
-      width: '50px',
-      fontSize: '1em',
-      fontWeight: 100
+    outline: 0,
+    border: 0,
+    width: '50px',
+    fontSize: '1em',
+    fontWeight: 100
   },
   name: {
-      padding: '20px 0',
-      height: '40px',
-      flex: 1,
-  },
-}
+    padding: '20px 0',
+    height: '40px',
+    flex: 1
+  }
+};
 
 export class Timer extends Component<ITimerProps, ITimerState> {
-  
   public state = {
     minutes: 0,
     seconds: 0,
     remaining: 0,
     isEditing: false,
     edit: {
-      minutes: 0,
+      minutes: 0
     }
   };
 
@@ -59,85 +57,90 @@ export class Timer extends Component<ITimerProps, ITimerState> {
       ...this.getTimeInMinutesAndSeconds(next.remaining),
       remaining: next.remaining,
       edit: {
-        minutes: next.round,
+        minutes: next.round
       }
     });
   }
 
   public render() {
     return (
-      <div style={{ textAlign: 'right', marginRight: '10px', ...styles.name}}>
-            {
-              this.state.isEditing
-                ? this.renderEdit()
-                : this.renderView()
-            }
-          </div>
-        )
-      }
-      
-  private renderEdit = () => (
-      <>
-        <input 
-          id="minuteChanger"
-          style={styles.minuteChanger}
-          type="number"
-          value={this.state.edit.minutes} 
-          onBlur={() => this.exitEditMode()}
-          onChange={(e) => this.handleRoundTimeChange(e)}/>
-        <span>
-          min
-        </span>
-      </>
+      <div style={{ textAlign: 'right', marginRight: '10px', ...styles.name }}>
+        {this.state.isEditing ? this.renderEdit() : this.renderView()}
+      </div>
     );
+  }
+
+  private renderEdit = () => (
+    <>
+      <input
+        id="minuteChanger"
+        style={styles.minuteChanger}
+        type="number"
+        value={this.state.edit.minutes}
+        onBlur={() => this.exitEditMode()}
+        onKeyPress={e => this.handleKeyPress(e)}
+        onChange={e => this.handleRoundTimeChange(e)}
+      />
+      <span>min</span>
+    </>
+  );
+
+  private handleKeyPress = (e: any) => {
+    if (e.key.toLowerCase() !== 'enter') {
+      return;
+    }
+    this.exitEditMode();
+  };
 
   private getCircumference() {
     return 37 * 2 * Math.PI;
   }
 
   private getProgress() {
-    return this.getCircumference() - (this.state.remaining / (this.state.edit.minutes * 60)) * this.getCircumference();
+    return (
+      this.getCircumference() -
+      (this.state.remaining / (this.state.edit.minutes * 60)) * this.getCircumference()
+    );
   }
 
   private renderView = () => (
-      <div onClick={() => this.enterEditMode()}>
-        <svg height={80} width={80} >
-          <circle
-            strokeWidth={4}
-            stroke="orange"
-            fill="transparent"
-            r={37}
-            cx={40}
-            cy={40}
-            style={{ transform: 'rotate(-90deg)', transformOrigin: '50% 50%'}}
-            strokeDasharray={`${this.getCircumference()} ${this.getCircumference()}`}
-            strokeDashoffset={this.getProgress()}
-          />
-          <text x={40} y={46} color="black" textAnchor={"middle"} fontSize="20" strokeWidth="2">
-            {this.timeText}
-          </text>
-        </svg>
-        {/* {this.timeText} */}
-      </div>
-    );
+    <div onClick={() => this.enterEditMode()}>
+      <svg height={80} width={80}>
+        <circle
+          strokeWidth={4}
+          stroke="orange"
+          fill="transparent"
+          r={37}
+          cx={40}
+          cy={40}
+          style={{ transform: 'rotate(-90deg)', transformOrigin: '50% 50%' }}
+          strokeDasharray={`${this.getCircumference()} ${this.getCircumference()}`}
+          strokeDashoffset={this.getProgress()}
+        />
+        <text x={40} y={46} color="black" textAnchor={'middle'} fontSize="20" strokeWidth="2">
+          {this.timeText}
+        </text>
+      </svg>
+      {/* {this.timeText} */}
+    </div>
+  );
 
   private enterEditMode = () => {
-    this.setState({isEditing: true});
+    this.setState({ isEditing: true });
     setTimeout(() => (document.getElementById('minuteChanger') as any).focus(), 0);
-  }
-  
+  };
+
   private exitEditMode = () => {
     this.setState({ isEditing: false });
-  }
-  
+  };
+
   private handleRoundTimeChange = (e: any) => {
     this.props.onTimerChange(parseInt(e.currentTarget.value));
-  }
-
+  };
 
   private getTimeInMinutesAndSeconds(time: number) {
     const minutes = Math.floor(time / 60);
     const seconds = Math.floor(time - minutes * 60);
-    return { minutes, seconds}
+    return { minutes, seconds };
   }
 }

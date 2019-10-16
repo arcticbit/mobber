@@ -1,10 +1,10 @@
-import { app, BrowserWindow, App, ipcMain, Notification } from "electron";
-import { MobberTray } from "../tray/tray.component";
-import { Hotkeys } from "../hotkeys/hotkeys.service";
-import { State } from "../state/state";
-import { Events } from "../events/events";
-import { options } from "./app.options";
-import { Keyboard } from "../keyboard/keyboard.service";
+import { app, BrowserWindow, App, ipcMain, Notification } from 'electron';
+import { MobberTray } from '../tray/tray.component';
+import { Hotkeys } from '../hotkeys/hotkeys.service';
+import { State } from '../state/state';
+import { Events } from '../events/events';
+import { options } from './app.options';
+import { Keyboard } from '../keyboard/keyboard.service';
 
 export class MobberApp {
   app: App;
@@ -21,7 +21,7 @@ export class MobberApp {
   }
 
   run() {
-    this.app.on("ready", () => {
+    this.app.on('ready', () => {
       this.app.dock.hide();
       this.tray = new MobberTray(this);
       this.state = new State(this);
@@ -31,28 +31,27 @@ export class MobberApp {
       this.events.listen();
       this.setupHotkeys();
       this.createWindow();
-      this.state.startNewDriverSession();
       setInterval(() => {
-        this.refreshTitle();
+        this.refresh();
       }, 1000);
     });
   }
 
   createWindow() {
     this.window = new BrowserWindow(options);
-    this.window.loadURL("http://localhost:3000");
+    this.window.loadURL('http://localhost:3000');
 
     this.recalculatePosition();
 
     this.window.show();
-    this.window.on("blur", () => this.window.hide());
-    this.window.on("ready-to-show", this.handleReadyToShow());
+    this.window.on('blur', () => this.window.hide());
+    this.window.on('ready-to-show', this.handleReadyToShow());
   }
 
   private handleReadyToShow(): Function {
     return () => {
-      console.log("ready to show: sending state update from app");
-      ipcMain.emit("state-update", { hello: "world from the app" });
+      console.log('ready to show: sending state update from app');
+      ipcMain.emit('state-update', { hello: 'world from the app' });
     };
   }
 
@@ -69,31 +68,29 @@ export class MobberApp {
   private setupHotkeys() {
     this.hotkeys.registerHotkeys([
       {
-        keys: "CommandOrControl+Shift+F2",
+        keys: 'CommandOrControl+Shift+F2',
         action: () => {
           this.state.previous();
-          this.tray.setTitle(this.state.get().persons[0].name);
         }
       },
       {
-        keys: "CommandOrControl+Shift+F3",
+        keys: 'CommandOrControl+Shift+F3',
         action: () => {
-          this.isPaused = !this.isPaused;
           const notif = new Notification({
-            title: "Title",
-            body: "Lorem Ipsum Dolor Sit Amet"
+            title: 'Title',
+            body: 'Lorem Ipsum Dolor Sit Amet'
           });
           notif.show();
         }
       },
       {
-        keys: "CommandOrControl+Shift+F4",
+        keys: 'CommandOrControl+Shift+F4',
         action: () => {
           this.state.next();
         }
       },
       {
-        keys: "CommandOrControl+Shift+F5",
+        keys: 'CommandOrControl+Shift+F5',
         action: () => {
           this.toggleInterface();
         }
@@ -101,31 +98,35 @@ export class MobberApp {
     ]);
   }
 
-  private refreshTitle() {
-    if (this.isPaused) {
-      return;
-    }
-
-    this.state.decreaseTimeLeft();
+  private updateTrayTitle = () => {
     const timeLeft = this.state.getTimeLeft();
 
     const minutes = Math.floor(timeLeft / 60);
     const seconds = Math.floor(timeLeft - minutes * 60);
 
-    const driverName = this.state.get().persons[0].name;
-    const title = `[${minutes
-      .toString()
-      .padStart(2, "0")}:${seconds.toString().padStart(2, "0")}] ${driverName}`;
-    if (timeLeft <= 0) {
-      this.state.next();
-      this.state.resetTimeLeft();
+    const timer = `[${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}]`;
+
+    let title = `${timer} `;
+
+    if (this.state.isPaused()) {
+      title += 'Paused';
+    } else if (this.state.isBreak()) {
+      title += 'Break';
+    } else {
+      title += this.state.getCurrentDriver().name;
     }
+
     this.tray.setTitle(title);
+  };
+
+  private refresh = () => {
+    this.state.tick();
+    this.updateTrayTitle();
     this.pushState();
-  }
+  };
 
   public pushState() {
-    this.window.webContents.send("state-update", this.state.get());
+    this.window.webContents.send('state-update', this.state.get());
   }
 
   private recalculatePosition() {

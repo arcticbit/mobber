@@ -75,7 +75,7 @@ export class AddParticipant extends React.Component {
     return (
       <div style={styles.form}>
         <div style={styles.formFlags} onClick={this.toggleLayout}>
-          {this.state.layout == 'US' ? (
+          {this.state.layout === 'US' ? (
             <FlagIcon country={'US' as any} size={20} />
           ) : (
             <FlagIcon country={'Swedish-Pro' as any} size={20} />

@@ -46,7 +46,7 @@ export class State {
   }
 
   public isBreak = () => {
-    return this.state.roundCounter % this.state.roundsBetweenBreaks === 0;
+    return this.state.isBreak;
   };
 
   public isPaused = () => {
@@ -59,8 +59,17 @@ export class State {
   };
 
   public next = () => {
-    this.state.roundCounter++;
-    this.startNewDriverSession();
+    const wasOnBreak = this.state.isBreak;
+    this.state.isBreak = false;
+
+    if (!wasOnBreak) {
+      this.state.roundCounter++;
+
+      const isTimeForBreak = this.state.roundCounter % this.state.roundsBetweenBreaks === 0;
+      this.state.isBreak = isTimeForBreak;
+    }
+
+    this.reset();
   };
 
   private resetTimer = () => {
@@ -73,12 +82,19 @@ export class State {
 
   public previous = () => {
     this.state.roundCounter--;
-    this.startNewDriverSession();
+    this.reset();
   };
 
-  private startNewDriverSession = () => {
+  private reset = () => {
     this.resetTimer();
-    this.parent.keyboard.switchLayout(this.getCurrentDriver().language);
+    this.updateKeyboardLayout();
+  };
+
+  private updateKeyboardLayout = () => {
+    const currentDriver = this.getCurrentDriver();
+    if (currentDriver) {
+      this.parent.keyboard.switchLayout(currentDriver.language);
+    }
   };
 
   public tick = () => {
@@ -98,6 +114,7 @@ export class State {
     roundsBetweenBreaks: 4,
     roundCounter: 0,
     isPaused: false,
+    isBreak: false,
     persons: [
       {
         name: 'Daniel',

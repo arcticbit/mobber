@@ -113,7 +113,12 @@ export class MobberApp {
     } else if (this.state.isBreak()) {
       title += 'Break';
     } else {
-      title += this.state.getCurrentDriver().name;
+      const currentDriver = this.state.getCurrentDriver();
+      if (currentDriver) {
+        title += currentDriver.name;
+      } else {
+        title += 'Mobber';
+      }
     }
 
     this.tray.setTitle(title);

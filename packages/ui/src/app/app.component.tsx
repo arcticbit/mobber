@@ -34,18 +34,15 @@ export class App extends Component<any, any> {
     (document.getElementById('inputField') as any).focus();
   }
 
-  public isBreak = () => {
-    return this.state.roundCounter % this.state.roundsBetweenBreaks === 0;
-  };
-
   render() {
     console.log('state render', this.state);
     const currentDriverIndex = Math.abs(this.state.roundCounter) % this.state.persons.length;
     const driver = this.state.persons[currentDriverIndex];
+
     return (
       <div className="App-header" style={styles.wrapper}>
-        <div style={{ ...styles.autoFlex }}>
-          {this.isBreak() ? (
+        <div>
+          {this.state.isBreak ? (
             <Driver
               title="Break"
               timeLeft={this.state.timeLeft}
@@ -54,25 +51,28 @@ export class App extends Component<any, any> {
             />
           ) : (
             <Driver
-              title={driver.name}
+              title={driver ? driver.name : 'Mobber'}
               timeLeft={this.state.timeLeft}
               timePerRound={this.state.timePerRound}
               isPaused={this.state.isPaused}
             />
           )}
         </div>
-        <div style={styles.autoFlex}>
+        <div>
           <Participants
             participants={this.state.persons}
             onDelete={this.handleDelete}
             onDriverPromotion={this.handleDriverPromotion}
+            currentDriverIndex={currentDriverIndex}
           />
         </div>
-        <Controls
-          onPreviousDriver={this.handlePreviousDriver}
-          onNextDriver={this.handleNextDriver}
-          onPause={this.handlePause}
-        />
+        <div style={{ marginTop: 'auto' }}>
+          <Controls
+            onPreviousDriver={this.handlePreviousDriver}
+            onNextDriver={this.handleNextDriver}
+            onPause={this.handlePause}
+          />
+        </div>
       </div>
     );
   }

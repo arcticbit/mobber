@@ -5,6 +5,7 @@ export const initialState = {
   roundsBetweenBreaks: 4,
   roundCounter: 0,
   isPaused: false,
+  isBreak: false,
   persons: [
     { name: 'Simme', layout: 'SE' },
     { name: 'Danny', layout: 'US' },

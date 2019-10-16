@@ -9,8 +9,12 @@ import seFlag from '../../assets/se-flag.png';
 export class Participant extends React.Component<IParticipantProps> {
   render() {
     const { person } = this.props;
+    const personCard = {
+      fontStyle: 'italic',
+      background: this.props.isCurrentDriver ? '#ff00ff' : '#fff'
+    };
     return (
-      <div className="person" key={person.name} style={{ fontWeight: 'bold', fontStyle: 'italic' }}>
+      <div className="person" key={person.name} style={personCard}>
         <div className="arrange" style={{ cursor: 'move' }}>
           <img alt="" src={dragIcon} style={{ height: '.6em', marginBottom: '1px' }} />
         </div>

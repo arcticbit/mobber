@@ -7,4 +7,5 @@ export interface IMobberState {
   roundCounter: number;
   persons: IPerson[];
   isPaused: boolean;
+  isBreak: boolean;
 }

@@ -99,10 +99,12 @@ export class State {
 
   public updateMinutesPerRound = minutes => {
     this.state.minutesPerRound = minutes;
+    this.resetTimer();
   };
 
   public updateMinutesPerBreak = minutes => {
     this.state.minutesPerBreak = minutes;
+    this.resetTimer();
   };
 
   public tick = () => {

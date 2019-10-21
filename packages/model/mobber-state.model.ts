@@ -1,8 +1,8 @@
 import { IPerson } from './person.model';
 export interface IMobberState {
-  timeLeft: number;
-  timePerRound: number;
-  breakTime: number;
+  secondsLeft: number;
+  minutesPerRound: number;
+  minutesPerBreak: number;
   roundsBetweenBreaks: number;
   roundCounter: number;
   persons: IPerson[];

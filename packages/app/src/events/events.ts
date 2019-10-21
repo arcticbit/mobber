@@ -16,7 +16,21 @@ export class Events {
     ipcMain.on('previous-driver', () => this.handlePreviousDriver());
     ipcMain.on('next-driver', () => this.handleNextDriver());
     ipcMain.on('toggle-pause', () => this.handleTogglePause());
+    ipcMain.on('update-minutes-per-round', (_, minutes) =>
+      this.handleUpdateMinutesPerRound(minutes)
+    );
+    ipcMain.on('update-minutes-per-break', (_, minutes) =>
+      this.handleUpdateMinutesPerBreak(minutes)
+    );
   }
+
+  private handleUpdateMinutesPerRound = (minutes: number) => {
+    this.parent.state.updateMinutesPerRound(minutes);
+  };
+
+  private handleUpdateMinutesPerBreak = (minutes: number) => {
+    this.parent.state.updateMinutesPerBreak(minutes);
+  };
 
   private handleTogglePause = () => {
     console.log('renderer: toggle-pause');

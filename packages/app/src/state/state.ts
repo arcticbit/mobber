@@ -5,8 +5,8 @@ import { MobberApp } from '../app/app';
 import { IPerson } from '../../../model/person.model';
 
 export class State {
-  public getTimeLeft() {
-    return this.state.timeLeft;
+  public getSecondsLeft() {
+    return this.state.secondsLeft;
   }
 
   public togglePause = () => {
@@ -74,9 +74,9 @@ export class State {
 
   private resetTimer = () => {
     if (this.isBreak()) {
-      this.state.timeLeft = this.state.breakTime;
+      this.state.secondsLeft = this.state.minutesPerBreak * 60;
     } else {
-      this.state.timeLeft = this.state.timePerRound;
+      this.state.secondsLeft = this.state.minutesPerRound * 60;
     }
   };
 
@@ -97,20 +97,28 @@ export class State {
     }
   };
 
+  public updateMinutesPerRound = minutes => {
+    this.state.minutesPerRound = minutes;
+  };
+
+  public updateMinutesPerBreak = minutes => {
+    this.state.minutesPerBreak = minutes;
+  };
+
   public tick = () => {
     if (this.isPaused()) {
       return;
     }
-    this.state.timeLeft--;
-    if (this.state.timeLeft <= 0) {
+    this.state.secondsLeft--;
+    if (this.state.secondsLeft <= 0) {
       this.next();
     }
   };
 
   private state: IMobberState = {
-    timeLeft: 7 * 60,
-    timePerRound: 7 * 60,
-    breakTime: 12 * 60,
+    secondsLeft: 7 * 60,
+    minutesPerRound: 7,
+    minutesPerBreak: 12,
     roundsBetweenBreaks: 4,
     roundCounter: 0,
     isPaused: false,

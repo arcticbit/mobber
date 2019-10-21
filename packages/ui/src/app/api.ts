@@ -23,4 +23,10 @@ export class Api {
   public togglePause() {
     ipcRenderer.send('toggle-pause');
   }
+  public updateMinutesPerRound = (minutes: number) => {
+    ipcRenderer.send('update-minutes-per-round', minutes);
+  };
+  public updateMinutesPerBreak = (minutes: number) => {
+    ipcRenderer.send('update-minutes-per-break', minutes);
+  };
 }

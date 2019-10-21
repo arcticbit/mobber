@@ -1,7 +1,7 @@
 export const initialState = {
-  timeLeft: 0,
-  timePerRound: 0,
-  breakTime: 0,
+  secondsLeft: 0,
+  minutesPerRound: 0,
+  minutesPerBreak: 0,
   roundsBetweenBreaks: 4,
   roundCounter: 0,
   isPaused: false,

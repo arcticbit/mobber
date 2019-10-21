@@ -1,28 +1,30 @@
-import { ipcMain, BrowserWindow, Tray } from 'electron';
-import { State } from '../state/state';
+import { ipcMain } from 'electron';
 import { IPerson } from '../../../model/person.model';
-import { MobberTray } from '../tray/tray.component';
-import { MobberApp } from '../app/app';
+import { MobberApp } from '../app';
+import IpcMainEvent = Electron.IpcMainEvent;
 
 export class Events {
   constructor(private readonly parent: MobberApp) {}
 
-  listen() {
-    ipcMain.on('ready', this.handleReady());
-    ipcMain.on('new-participant', this.handleAddParticipant());
-    ipcMain.on('remove-participant', this.handleRemoveParticipant());
-    ipcMain.on('new-driver', this.handleNewDriver());
-    ipcMain.on('hide-interface', () => this.handleHideInterface());
-    ipcMain.on('previous-driver', () => this.handlePreviousDriver());
-    ipcMain.on('next-driver', () => this.handleNextDriver());
-    ipcMain.on('toggle-pause', () => this.handleTogglePause());
-    ipcMain.on('update-minutes-per-round', (_, minutes) =>
-      this.handleUpdateMinutesPerRound(minutes)
-    );
-    ipcMain.on('update-minutes-per-break', (_, minutes) =>
-      this.handleUpdateMinutesPerBreak(minutes)
-    );
+  public listen() {
+    ipcMain.on('ready', () => this.handleReady());
+    ipcMain.on('new-participant', this.handleEvent(this.handleAddParticipant));
+    ipcMain.on('remove-participant', this.handleEvent(this.handleRemoveParticipant));
+    ipcMain.on('new-driver', this.handleEvent(this.handleNewDriver));
+    ipcMain.on('hide-interface', this.handleEvent(this.handleHideInterface));
+    ipcMain.on('previous-driver', this.handleEvent(this.handlePreviousDriver));
+    ipcMain.on('next-driver', this.handleEvent(this.handleNextDriver));
+    ipcMain.on('toggle-pause', this.handleEvent(this.handleTogglePause));
+    ipcMain.on('update-minutes-per-round', this.handleEvent(this.handleUpdateMinutesPerRound));
+    ipcMain.on('update-minutes-per-break', this.handleEvent(this.handleUpdateMinutesPerBreak));
   }
+
+  private handleEvent = (eventHandler: (...args: any[]) => void) => {
+    return (event: IpcMainEvent, ...args: any[]) => {
+      eventHandler(...args);
+      this.parent.pushState();
+    };
+  };
 
   private handleUpdateMinutesPerRound = (minutes: number) => {
     this.parent.state.updateMinutesPerRound(minutes);
@@ -47,33 +49,25 @@ export class Events {
     this.parent.state.next();
   };
 
-  private handleNewDriver(): (event: Electron.IpcMainEvent, ...args: any[]) => void {
-    return (_event, driverName: string) => {
-      console.log('renderer: new-driver ', driverName);
-      this.parent.state.setDriverByName(driverName);
-    };
-  }
+  private handleNewDriver = (driverName: string) => {
+    console.log('renderer: new-driver ', driverName);
+    this.parent.state.setDriverByName(driverName);
+  };
 
-  private handleRemoveParticipant(): (event: Electron.IpcMainEvent, ...args: any[]) => void {
-    return (_event, person: IPerson) => {
-      this.parent.state.removePerson(person);
-    };
-  }
+  private handleRemoveParticipant = (person: IPerson) => {
+    this.parent.state.removePerson(person);
+  };
 
-  private handleAddParticipant(): (event: Electron.IpcMainEvent, ...args: any[]) => void {
-    return (_event, person: IPerson) => {
-      this.parent.state.addPerson(person);
-    };
-  }
+  private handleAddParticipant = (person: IPerson) => {
+    this.parent.state.addPerson(person);
+  };
 
-  private handleReady(): (event: Electron.IpcMainEvent, ...args: any[]) => void {
-    return () => {
-      console.log('renderer: ready');
-      this.parent.window.webContents.send('state-update', this.parent.state.get());
-    };
-  }
+  private handleReady = () => {
+    console.log('renderer: ready');
+    this.parent.pushState();
+  };
 
-  private handleHideInterface() {
+  private handleHideInterface = () => {
     this.parent.window.hide();
-  }
+  };
 }

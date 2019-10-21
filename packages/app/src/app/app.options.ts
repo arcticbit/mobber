@@ -10,7 +10,7 @@ export const options = {
   transparent: true,
   webPreferences: {
     nodeIntegration: true,
-    backgroundThrottling: false
+    backgroundThrottling: false,
   },
-  skipTaskbar: true
+  skipTaskbar: true,
 };

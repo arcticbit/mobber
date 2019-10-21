@@ -20,13 +20,13 @@ const styles = {
     border: 0,
     width: '50px',
     fontSize: '1em',
-    fontWeight: 100
+    fontWeight: 100,
   },
   name: {
     padding: '20px 0',
     height: '40px',
-    flex: 1
-  }
+    flex: 1,
+  },
 };
 
 export class Timer extends Component<ITimerProps, ITimerState> {
@@ -36,8 +36,8 @@ export class Timer extends Component<ITimerProps, ITimerState> {
     secondsLeft: 0,
     isEditing: false,
     edit: {
-      minutes: 0
-    }
+      minutes: 0,
+    },
   };
 
   get minutes() {
@@ -57,8 +57,8 @@ export class Timer extends Component<ITimerProps, ITimerState> {
       ...this.getTimeInMinutesAndSeconds(next.secondsLeft),
       secondsLeft: next.secondsLeft,
       edit: {
-        minutes: next.minutesPerRound
-      }
+        minutes: next.minutesPerRound,
+      },
     });
   }
 
@@ -79,6 +79,8 @@ export class Timer extends Component<ITimerProps, ITimerState> {
         value={this.state.edit.minutes}
         onBlur={() => this.exitEditMode()}
         onKeyPress={e => this.handleKeyPress(e)}
+        min={1}
+        max={100}
         onChange={e => this.handleMinutesPerRoundChange(e)}
       />
       <span>min</span>
@@ -98,8 +100,7 @@ export class Timer extends Component<ITimerProps, ITimerState> {
 
   private getProgress() {
     return (
-      this.getCircumference() -
-      (this.state.secondsLeft / (this.state.edit.minutes * 60)) * this.getCircumference()
+      this.getCircumference() - (this.state.secondsLeft / (this.state.edit.minutes * 60)) * this.getCircumference()
     );
   }
 

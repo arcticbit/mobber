@@ -10,11 +10,11 @@ export class Controls extends React.Component<IControlsProps> {
   public render = () => {
     const containerStyle = {
       padding: '10px',
-      display: 'flex'
+      display: 'flex',
     };
     const buttonStyle = {
       flexGrow: 1,
-      height: '30px'
+      height: '30px',
     };
     return (
       <div style={containerStyle}>

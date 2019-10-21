@@ -3,9 +3,9 @@ export const styles: { [key: string]: React.CSSProperties } = {
     display: 'flex',
     flexDirection: 'column',
     height: '100%',
-    minWidth: '200px'
+    minWidth: '200px',
   },
   autoFlex: {
-    flex: 'auto'
-  }
+    flex: 'auto',
+  },
 };

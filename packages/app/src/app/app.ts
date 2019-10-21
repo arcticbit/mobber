@@ -1,4 +1,4 @@
-import { app, BrowserWindow, App, ipcMain, Notification } from 'electron';
+import { app, BrowserWindow, App, Notification } from 'electron';
 import { MobberTray } from '../tray/tray.component';
 import { Hotkeys } from '../hotkeys/hotkeys.service';
 import { State } from '../state/state';
@@ -14,7 +14,6 @@ export class MobberApp {
   keyboard: Keyboard;
   state: State;
   events: Events;
-  isPaused = false;
 
   constructor() {
     this.app = app;
@@ -22,7 +21,9 @@ export class MobberApp {
 
   run() {
     this.app.on('ready', () => {
-      this.app.dock.hide();
+      if (this.app.dock) {
+        this.app.dock.hide();
+      }
       this.tray = new MobberTray(this);
       this.state = new State(this);
       this.hotkeys = new Hotkeys();
@@ -48,10 +49,9 @@ export class MobberApp {
     this.window.on('ready-to-show', this.handleReadyToShow());
   }
 
-  private handleReadyToShow(): Function {
+  private handleReadyToShow(): () => void {
     return () => {
       console.log('ready to show: sending state update from app');
-      ipcMain.emit('state-update', { hello: 'world from the app' });
     };
   }
 
@@ -71,30 +71,30 @@ export class MobberApp {
         keys: 'CommandOrControl+Shift+F2',
         action: () => {
           this.state.previous();
-        }
+        },
       },
       {
         keys: 'CommandOrControl+Shift+F3',
         action: () => {
           const notif = new Notification({
             title: 'Title',
-            body: 'Lorem Ipsum Dolor Sit Amet'
+            body: 'Lorem Ipsum Dolor Sit Amet',
           });
           notif.show();
-        }
+        },
       },
       {
         keys: 'CommandOrControl+Shift+F4',
         action: () => {
           this.state.next();
-        }
+        },
       },
       {
         keys: 'CommandOrControl+Shift+F5',
         action: () => {
           this.toggleInterface();
-        }
-      }
+        },
+      },
     ]);
   }
 
@@ -137,6 +137,7 @@ export class MobberApp {
   private recalculatePosition() {
     const { x, y, width } = this.tray.getBounds();
     const newX = Math.round(x - width / 2);
-    this.window.setPosition(newX, y);
+    const windowBounds = this.window.getBounds();
+    this.window.setPosition(newX, y - windowBounds.height);
   }
 }

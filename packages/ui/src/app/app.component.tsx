@@ -27,7 +27,7 @@ export class App extends Component<any, any> {
     });
     ipcRenderer.on('state-update', (_event: any, state: IMobberState) => {
       this.setState({
-        ...state
+        ...state,
       });
     });
     ipcRenderer.send('ready', null);

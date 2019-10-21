@@ -1,7 +1,7 @@
 import { KeyboardLayout } from '../../../model/keyboard.enum';
 import { ScrollDirection } from '../../../model/scroll-direction.model';
 import { IMobberState } from '../../../model/mobber-state.model';
-import { MobberApp } from '../app/app';
+import { MobberApp } from '../app';
 import { IPerson } from '../../../model/person.model';
 
 export class State {
@@ -27,7 +27,7 @@ export class State {
     console.log('adding a person', person);
     this.state.persons.push({
       ...person,
-      scroll: ScrollDirection.Natural
+      scroll: ScrollDirection.Natural,
     });
   }
 
@@ -127,13 +127,13 @@ export class State {
       {
         name: 'Daniel',
         language: KeyboardLayout.English,
-        scroll: ScrollDirection.Natural
+        scroll: ScrollDirection.Natural,
       },
       {
         name: 'Simon',
         language: KeyboardLayout.Swedish,
-        scroll: ScrollDirection.Natural
-      }
-    ]
+        scroll: ScrollDirection.Natural,
+      },
+    ],
   };
 }

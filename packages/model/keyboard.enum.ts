@@ -1,4 +1,4 @@
 export enum KeyboardLayout {
-  English = "US",
-  Swedish = "Swedish-Pro"
+  English = 'US',
+  Swedish = 'Swedish-Pro',
 }

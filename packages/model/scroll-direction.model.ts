@@ -1,4 +1,4 @@
 export enum ScrollDirection {
-  Natural = "Natural",
-  Inverted = "Inverted"
+  Natural = 'Natural',
+  Inverted = 'Inverted',
 }

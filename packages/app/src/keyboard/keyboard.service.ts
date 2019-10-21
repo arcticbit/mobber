@@ -1,13 +1,11 @@
-import { exec } from "child_process";
-import { exists } from "fs";
-import { KeyboardLayout } from "../../../model/keyboard.enum";
+import { exec } from 'child_process';
+import { exists } from 'fs';
+import { KeyboardLayout } from '../../../model/keyboard.enum';
 
 export class Keyboard {
   constructor() {
     this.isSwitcherInstalled().catch(() => {
-      throw new Error(
-        "This app requires xkbswitch to be present in /usr/local/bin"
-      );
+      throw new Error('This app requires xkbswitch to be present in /usr/local/bin');
     });
   }
 
@@ -17,7 +15,7 @@ export class Keyboard {
 
   private async isSwitcherInstalled() {
     return await new Promise(resolve => {
-      exists("/usr/local/bin/xkbswitch", exists => {
+      exists('/usr/local/bin/xkbswitch', exists => {
         resolve(exists);
       });
     });

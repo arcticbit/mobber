@@ -8,19 +8,19 @@ import { KeyboardLayout } from '../../../../model/keyboard.enum';
 const styles = {
   flag: {
     width: '20px',
-    padding: '0 5px'
+    padding: '0 5px',
   },
   formInput: {
     flex: 'auto',
     boxSizing: 'border-box' as any,
     padding: '8px',
     outline: 'none',
-    border: 0
+    border: 0,
   },
   formSubmitButton: {
     flex: '1',
     maxWidth: '30px',
-    background: '#eee'
+    background: '#eee',
   },
   form: {
     border: '1px solid #eee',
@@ -29,12 +29,12 @@ const styles = {
     flex: 'auto',
     minHeight: '30px',
     maxHeight: '30px',
-    display: 'flex'
+    display: 'flex',
   },
   formFlags: {
     padding: '4px',
-    cursor: 'pointer'
-  }
+    cursor: 'pointer',
+  },
 };
 
 export class AddParticipant extends React.Component {
@@ -43,7 +43,7 @@ export class AddParticipant extends React.Component {
 
   private toggleLayout = () => {
     this.setState({
-      layout: this.state.layout === 'US' ? 'Swedish-Pro' : 'US'
+      layout: this.state.layout === 'US' ? 'Swedish-Pro' : 'US',
     });
   };
 
@@ -58,7 +58,7 @@ export class AddParticipant extends React.Component {
     const newParticipant: IPerson = {
       name: this.state.name || '',
       language: this.state.layout as KeyboardLayout,
-      scroll: 'Natural' as any
+      scroll: 'Natural' as any,
     };
     this.setState({ name: '' });
     this.api.add(newParticipant);
@@ -68,7 +68,7 @@ export class AddParticipant extends React.Component {
     this.setState({
       ...this.state,
       name: e.target.value,
-      layout: this.state.layout
+      layout: this.state.layout,
     });
   };
   render() {

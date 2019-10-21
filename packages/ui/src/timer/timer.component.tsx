@@ -1,9 +1,9 @@
 import React, { Component } from 'react';
 
 export interface ITimerProps {
-  onTimerChange: (e: any) => void;
-  round: number;
-  remaining: number;
+  onMinutesPerRoundChange: (e: any) => void;
+  minutesPerRound: number;
+  secondsLeft: number;
 }
 
 interface ITimerState {
@@ -11,7 +11,7 @@ interface ITimerState {
   edit: { minutes: number };
   minutes: number;
   seconds: number;
-  remaining: number;
+  secondsLeft: number;
 }
 
 const styles = {
@@ -33,7 +33,7 @@ export class Timer extends Component<ITimerProps, ITimerState> {
   public state = {
     minutes: 0,
     seconds: 0,
-    remaining: 0,
+    secondsLeft: 0,
     isEditing: false,
     edit: {
       minutes: 0
@@ -54,10 +54,10 @@ export class Timer extends Component<ITimerProps, ITimerState> {
 
   public componentWillReceiveProps(next: ITimerProps) {
     this.setState({
-      ...this.getTimeInMinutesAndSeconds(next.remaining),
-      remaining: next.remaining,
+      ...this.getTimeInMinutesAndSeconds(next.secondsLeft),
+      secondsLeft: next.secondsLeft,
       edit: {
-        minutes: next.round
+        minutes: next.minutesPerRound
       }
     });
   }
@@ -79,7 +79,7 @@ export class Timer extends Component<ITimerProps, ITimerState> {
         value={this.state.edit.minutes}
         onBlur={() => this.exitEditMode()}
         onKeyPress={e => this.handleKeyPress(e)}
-        onChange={e => this.handleRoundTimeChange(e)}
+        onChange={e => this.handleMinutesPerRoundChange(e)}
       />
       <span>min</span>
     </>
@@ -99,7 +99,7 @@ export class Timer extends Component<ITimerProps, ITimerState> {
   private getProgress() {
     return (
       this.getCircumference() -
-      (this.state.remaining / (this.state.edit.minutes * 60)) * this.getCircumference()
+      (this.state.secondsLeft / (this.state.edit.minutes * 60)) * this.getCircumference()
     );
   }
 
@@ -134,8 +134,13 @@ export class Timer extends Component<ITimerProps, ITimerState> {
     this.setState({ isEditing: false });
   };
 
-  private handleRoundTimeChange = (e: any) => {
-    this.props.onTimerChange(parseInt(e.currentTarget.value));
+  private handleMinutesPerRoundChange = (e: any) => {
+    const minutes = parseInt(e.currentTarget.value);
+    if (isNaN(minutes)) {
+      return;
+    }
+    this.setState({ edit: { minutes } });
+    this.props.onMinutesPerRoundChange(minutes);
   };
 
   private getTimeInMinutesAndSeconds(time: number) {

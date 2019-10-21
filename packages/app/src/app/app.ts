@@ -99,10 +99,10 @@ export class MobberApp {
   }
 
   private updateTrayTitle = () => {
-    const timeLeft = this.state.getTimeLeft();
+    const secondsLeft = this.state.getSecondsLeft();
 
-    const minutes = Math.floor(timeLeft / 60);
-    const seconds = Math.floor(timeLeft - minutes * 60);
+    const minutes = Math.floor(secondsLeft / 60);
+    const seconds = Math.floor(secondsLeft - minutes * 60);
 
     const timer = `[${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}]`;
 

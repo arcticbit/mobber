@@ -45,15 +45,17 @@ export class App extends Component<any, any> {
           {this.state.isBreak ? (
             <Driver
               title="Break"
-              timeLeft={this.state.timeLeft}
-              timePerRound={this.state.breakTime}
+              secondsLeft={this.state.secondsLeft}
+              minutesPerRound={this.state.minutesPerBreak}
+              onMinutesPerRoundChanged={this.handleMinutesPerBreakChanged}
               isPaused={this.state.isPaused}
             />
           ) : (
             <Driver
               title={driver ? driver.name : 'Mobber'}
-              timeLeft={this.state.timeLeft}
-              timePerRound={this.state.timePerRound}
+              secondsLeft={this.state.secondsLeft}
+              minutesPerRound={this.state.minutesPerRound}
+              onMinutesPerRoundChanged={this.handleMinutesPerRoundChanged}
               isPaused={this.state.isPaused}
             />
           )}
@@ -76,6 +78,14 @@ export class App extends Component<any, any> {
       </div>
     );
   }
+
+  private handleMinutesPerRoundChanged = (minutes: number) => {
+    this.api.updateMinutesPerRound(minutes);
+  };
+
+  private handleMinutesPerBreakChanged = (minutes: number) => {
+    this.api.updateMinutesPerBreak(minutes);
+  };
 
   private handlePause = () => {
     this.api.togglePause();

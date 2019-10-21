@@ -4,9 +4,10 @@ import { Timer } from '../timer/timer.component';
 
 export interface IDriverProps {
   title: string;
-  timePerRound: number;
-  timeLeft: number;
+  minutesPerRound: number;
+  secondsLeft: number;
   isPaused: boolean;
+  onMinutesPerRoundChanged: (minutes: number) => void;
 }
 
 const styles = {
@@ -48,15 +49,14 @@ const styles = {
 
 export class Driver extends Component<IDriverProps, any> {
   state = {
-    isEditingTimer: false,
-    minutesPerRound: 7
+    isEditingTimer: false
   };
 
   private handleMinutesPerRoundChange = (minutes: number) => {
     if (isNaN(minutes) || minutes <= 0) {
       return;
     }
-    this.setState({ minutesPerRound: minutes });
+    this.props.onMinutesPerRoundChanged(minutes);
   };
 
   public render() {
@@ -70,9 +70,9 @@ export class Driver extends Component<IDriverProps, any> {
 
           <div style={styles.name}>{title}</div>
           <Timer
-            remaining={this.props.timeLeft}
-            round={this.state.minutesPerRound}
-            onTimerChange={(e: any) => this.handleMinutesPerRoundChange(e)}
+            secondsLeft={this.props.secondsLeft}
+            minutesPerRound={this.props.minutesPerRound}
+            onMinutesPerRoundChange={(e: any) => this.handleMinutesPerRoundChange(e)}
           />
         </div>
         <div style={styles.border} />

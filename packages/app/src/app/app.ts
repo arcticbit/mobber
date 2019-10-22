@@ -1,4 +1,4 @@
-import { app, BrowserWindow, App, Notification } from 'electron';
+import { app, BrowserWindow, App } from 'electron';
 import { MobberTray } from '../tray/tray.component';
 import { Hotkeys } from '../hotkeys/hotkeys.service';
 import { State } from '../state/state';
@@ -74,16 +74,6 @@ export class MobberApp {
         },
       },
       {
-        keys: 'CommandOrControl+Shift+F3',
-        action: () => {
-          const notif = new Notification({
-            title: 'Title',
-            body: 'Lorem Ipsum Dolor Sit Amet',
-          });
-          notif.show();
-        },
-      },
-      {
         keys: 'CommandOrControl+Shift+F4',
         action: () => {
           this.state.next();
@@ -99,28 +89,7 @@ export class MobberApp {
   }
 
   private updateTrayTitle = () => {
-    const secondsLeft = this.state.getSecondsLeft();
-
-    const minutes = Math.floor(secondsLeft / 60);
-    const seconds = Math.floor(secondsLeft - minutes * 60);
-
-    const timer = `[${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}]`;
-
-    let title = `${timer} `;
-
-    if (this.state.isPaused()) {
-      title += 'Paused';
-    } else if (this.state.isBreak()) {
-      title += 'Break';
-    } else {
-      const currentDriver = this.state.getCurrentDriver();
-      if (currentDriver) {
-        title += currentDriver.name;
-      } else {
-        title += 'Mobber';
-      }
-    }
-
+    const title = this.state.getTitle();
     this.tray.setTitle(title);
   };
 

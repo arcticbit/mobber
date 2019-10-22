@@ -1,3 +1,4 @@
+import { Notification } from 'electron';
 import { KeyboardLayout } from '../../../model/keyboard.enum';
 import { ScrollDirection } from '../../../model/scroll-direction.model';
 import { IMobberState } from '../../../model/mobber-state.model';
@@ -5,6 +6,27 @@ import { MobberApp } from '../app';
 import { IPerson } from '../../../model/person.model';
 
 export class State {
+  public getTitle = () => {
+    const secondsLeft = this.getSecondsLeft();
+    const minutes = Math.floor(secondsLeft / 60);
+    const seconds = Math.floor(secondsLeft - minutes * 60);
+    const timer = `[${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}]`;
+    let title = `${timer} `;
+    if (this.isPaused()) {
+      title += 'Paused';
+    } else if (this.isBreak()) {
+      title += 'Break';
+    } else {
+      const currentDriver = this.getCurrentDriver();
+      if (currentDriver) {
+        title += currentDriver.name;
+      } else {
+        title += 'Mobber';
+      }
+    }
+    return title;
+  };
+
   public getSecondsLeft() {
     return this.state.secondsLeft;
   }
@@ -69,7 +91,17 @@ export class State {
       this.state.isBreak = isTimeForBreak;
     }
 
+    this.showNotification();
+
     this.reset();
+  };
+
+  private showNotification = () => {
+    const notification = new Notification({
+      title: 'Mobber',
+      body: this.getTitle(),
+    });
+    notification.show();
   };
 
   private resetTimer = () => {

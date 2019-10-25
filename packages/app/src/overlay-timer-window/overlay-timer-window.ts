@@ -29,7 +29,7 @@ export class OverlayTimerWindow {
     this.window.setPosition(newX, newY);
   };
 
-  private createWindow() {
+  private createWindow = () => {
     this.window = new BrowserWindow({
       alwaysOnTop: true,
       frame: false,
@@ -42,7 +42,7 @@ export class OverlayTimerWindow {
     // this.window.setIgnoreMouseEvents(true);
     this.window.loadURL(`file://${__dirname}/../../../ui/public/overlayTimer.html`);
     this.window.once('ready-to-show', this.toggleOverlay);
-  }
+  };
 
   public updateState = (state: { title: string }) => {
     if (this.window.isDestroyed()) {

@@ -29,9 +29,12 @@ export class Api {
   public updateMinutesPerBreak = (minutes: number) => {
     ipcRenderer.send('update-minutes-per-break', minutes);
   };
+  public updateRoundsBetweenBreaks = (roundsBetweenBreaks: number) => {
+    ipcRenderer.send('update-rounds-between-breaks', roundsBetweenBreaks);
+  };
 
   public subscribe = (eventName: string, callback: (data: any) => void) => {
-  ipcRenderer.on(eventName, (_: any, data: any) => callback(data));
+    ipcRenderer.on(eventName, (_: any, data: any) => callback(data));
   };
   public ready = () => {
     ipcRenderer.send('ready');
@@ -39,6 +42,5 @@ export class Api {
 
   public hide = () => {
     ipcRenderer.send('hide-interface');
-  }
+  };
 }
-

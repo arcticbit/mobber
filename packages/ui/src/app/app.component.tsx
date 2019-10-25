@@ -22,7 +22,7 @@ export class App extends Component<any, IAppState> {
   get driverIndex() {
     return Math.abs(this.state.roundCounter) % this.state.persons.length;
   }
-  
+
   constructor(props: any, state: any) {
     super(props, state);
     this.state = initialState;
@@ -70,6 +70,18 @@ export class App extends Component<any, IAppState> {
             driverIndex={this.driverIndex}
           />
         </div>
+        <div>
+          <label>
+            Rounds between breaks
+            <input
+              type="number"
+              min={0}
+              max={100}
+              value={this.state.roundsBetweenBreaks}
+              onChange={e => this.api.updateRoundsBetweenBreaks(parseInt(e.currentTarget.value))}
+            />
+          </label>
+        </div>
         <div style={{ marginTop: 'auto' }}>
           <Controls
             onPreviousDriver={this.handlePreviousDriver}
@@ -84,7 +96,6 @@ export class App extends Component<any, IAppState> {
   private listenForStateChanges() {
     this.api.subscribe('state-update', this.handleStateChange);
   }
-
 
   private listenForEscapeKey() {
     window.addEventListener('keydown', e => {

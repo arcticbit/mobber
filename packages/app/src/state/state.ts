@@ -31,6 +31,10 @@ export class State {
     return `${this.getTimerLabel()} ${this.getDriverLabel()}`;
   };
 
+  public updateRoundsBetweenBreaks = (roundsBetweenBreaks: number) => {
+    this.state.roundsBetweenBreaks = roundsBetweenBreaks;
+  };
+
   public getSecondsLeft() {
     return this.state.secondsLeft;
   }

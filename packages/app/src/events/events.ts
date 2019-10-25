@@ -17,6 +17,7 @@ export class Events {
     ipcMain.on('toggle-pause', this.handleEvent(this.handleTogglePause));
     ipcMain.on('update-minutes-per-round', this.handleEvent(this.handleUpdateMinutesPerRound));
     ipcMain.on('update-minutes-per-break', this.handleEvent(this.handleUpdateMinutesPerBreak));
+    ipcMain.on('update-rounds-between-breaks', this.handleEvent(this.handleUpdateRoundsBetweenBreaks));
   }
 
   private handleEvent = (eventHandler: (...args: any[]) => void) => {
@@ -24,6 +25,10 @@ export class Events {
       eventHandler(...args);
       this.parent.pushState();
     };
+  };
+
+  private handleUpdateRoundsBetweenBreaks = (roundsBetweenBreaks: number) => {
+    this.parent.state.updateRoundsBetweenBreaks(roundsBetweenBreaks);
   };
 
   private handleUpdateMinutesPerRound = (minutes: number) => {

@@ -91,9 +91,8 @@ export class State {
       this.state.isBreak = isTimeForBreak;
     }
 
-    this.showNotification();
-
     this.reset();
+    this.showNotification();
   };
 
   private showNotification = () => {

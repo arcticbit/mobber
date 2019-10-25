@@ -21,6 +21,7 @@ export class MobberApp {
 
   run() {
     this.app.on('ready', () => {
+      this.app.setAppUserModelId(process.execPath);
       if (this.app.dock) {
         this.app.dock.hide();
       }
@@ -104,9 +105,11 @@ export class MobberApp {
   }
 
   private recalculatePosition() {
-    const { x, y, width } = this.tray.getBounds();
-    const newX = Math.round(x - width / 2);
+    const { x, y } = this.tray.getBounds();
     const windowBounds = this.window.getBounds();
-    this.window.setPosition(newX, y - windowBounds.height);
+    const newX = x - windowBounds.width;
+    const newY = y - windowBounds.height;
+    console.log(`setting window position: ${newX}, ${newY}`);
+    this.window.setPosition(newX, newY);
   }
 }

@@ -1,5 +1,5 @@
-import { Tray } from 'electron';
-import { MobberApp } from '../app/app';
+import { Tray, Menu } from 'electron';
+import { MobberApp } from '../app';
 import * as path from 'path';
 
 export class MobberTray {
@@ -12,6 +12,16 @@ export class MobberTray {
     this.tray.on('click', () => {
       this.parent.toggleInterface();
     });
+    const contextMenu = Menu.buildFromTemplate([
+      {
+        label: 'Show',
+        click: () => this.parent.toggleInterface(),
+      },
+      {
+        role: 'quit',
+      },
+    ]);
+    this.tray.setContextMenu(contextMenu);
   }
 
   setTitle = (text: string) => this.tray.setTitle(text);

@@ -6,25 +6,29 @@ import { MobberApp } from '../app';
 import { IPerson } from '../../../model/person.model';
 
 export class State {
-  public getTitle = () => {
+  public getTimerLabel = () => {
     const secondsLeft = this.getSecondsLeft();
     const minutes = Math.floor(secondsLeft / 60);
     const seconds = Math.floor(secondsLeft - minutes * 60);
-    const timer = `[${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}]`;
-    let title = `${timer} `;
+    return `[${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}]`;
+  };
+
+  public getDriverLabel = () => {
     if (this.isPaused()) {
-      title += 'Paused';
-    } else if (this.isBreak()) {
-      title += 'Break';
-    } else {
-      const currentDriver = this.getCurrentDriver();
-      if (currentDriver) {
-        title += currentDriver.name;
-      } else {
-        title += 'Mobber';
-      }
+      return 'Paused';
     }
-    return title;
+    if (this.isBreak()) {
+      return 'Break';
+    }
+    const currentDriver = this.getCurrentDriver();
+    if (currentDriver) {
+      return currentDriver.name;
+    }
+    return 'Mobber';
+  };
+
+  public getTitle = () => {
+    return `${this.getTimerLabel()} ${this.getDriverLabel()}`;
   };
 
   public getSecondsLeft() {

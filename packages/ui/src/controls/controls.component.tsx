@@ -21,9 +21,9 @@ export class Controls extends React.Component<IControlsProps> {
   public render = () => {
 
     const items = [
-      { action: this.props.onPreviousDriver, content: '&laquo;' },
+      { action: this.props.onPreviousDriver, content: '«' },
       { action: this.props.onPause,          content: 'pause'   },
-      { action: this.props.onNextDriver,     content: '&raquo;' },
+      { action: this.props.onNextDriver,     content: '»' },
     ]
 
     return (

@@ -1,4 +1,5 @@
 import { BrowserWindow, ipcMain, screen } from 'electron';
+import * as path from 'path';
 
 export class OverlayTimerWindow {
   private window: Electron.BrowserWindow;
@@ -38,13 +39,15 @@ export class OverlayTimerWindow {
         nodeIntegration: true,
       },
       show: false,
+      resizable: true,
     });
+    console.log(path.join(__dirname, '..', 'tray', 'tray.icon.png'));
     // this.window.setIgnoreMouseEvents(true);
     this.window.loadURL(`file://${__dirname}/../../../ui/public/overlayTimer.html`);
     this.window.once('ready-to-show', this.toggleOverlay);
   };
 
-  public updateState = (state: { title: string }) => {
+  public updateState = (state: { timer: string; title: string }) => {
     if (this.window.isDestroyed()) {
       this.createWindow();
     }

@@ -98,7 +98,7 @@ export class MobberApp {
 
   public pushState = () => {
     this.window.webContents.send('state-update', this.state.get());
-    this.overlayTimerWindow.updateState({ title: this.state.getTitle() });
+    this.overlayTimerWindow.updateState({ timer: this.state.getTimerLabel(), title: this.state.getDriverLabel() });
   };
 
   private recalculatePosition = () => {

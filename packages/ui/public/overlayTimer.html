@@ -6,21 +6,32 @@
     <!-- https://electronjs.org/docs/tutorial/security#csp-meta-tag -->
     <!--<meta http-equiv="Content-Security-Policy" content="script-src 'self';" />-->
     <style type="text/css">
-      html,
-      body {
-        background: transparent;
+      html, body {
         overflow: hidden;
         padding: 0;
-        margin: 0
+        margin: 0;
       }
 
       #title {
         background: rgba(0, 0, 0, 0.5);
+        border: 2px solid #000;
         font-family: Consolas, serif;
         color: #ccc;
         padding: 10px;
         white-space: nowrap;
         display: inline-block;
+        -webkit-box-shadow: rgba(0, 0, 0, 0.33) 2px 2px 6px;
+        margin: 20px;
+      }
+
+      .blink {
+        animation: blinker 0.2s linear infinite;
+      }
+
+      @keyframes blinker {
+        50% {
+          opacity: 0;
+        }
       }
     </style>
   </head>
@@ -29,12 +40,24 @@
   </body>
   <script>
     const { ipcRenderer } = window.require('electron');
+
+    let oldState = { title: '', timer: '' };
+
     ipcRenderer.on('state-update', (_event, state) => {
       const titleEl = document.getElementById('title');
-      titleEl.innerHTML = state.title;
-      const width = titleEl.clientWidth;
-      const height = titleEl.clientHeight;
+      titleEl.innerHTML = `${state.timer} ${state.title}`;
+      const width = titleEl.clientWidth + 2 * 20;
+      const height = titleEl.clientHeight + 2 * 20;
+
+      if (oldState.title !== state.title) {
+        titleEl.classList.add('blink');
+        setTimeout(() => {
+          titleEl.classList.remove('blink');
+        }, 1000);
+      }
+
       ipcRenderer.send('update-window-size', { width, height });
+      oldState = state;
     });
   </script>
 </html>

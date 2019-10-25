@@ -5,7 +5,7 @@ export const options: BrowserWindowConstructorOptions = {
   height: 300,
   minWidth: 400,
   minHeight: 300,
-  show: true,
+  show: false,
   frame: false,
   fullscreenable: false,
   resizable: true,

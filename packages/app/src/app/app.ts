@@ -5,21 +5,23 @@ import { State } from '../state/state';
 import { Events } from '../events/events';
 import { options } from './app.options';
 import { Keyboard } from '../keyboard/keyboard.service';
+import { OverlayTimerWindow } from '../overlay-timer-window/overlay-timer-window';
 
 export class MobberApp {
-  app: App;
-  tray: MobberTray;
-  hotkeys: Hotkeys;
-  window: BrowserWindow;
-  keyboard: Keyboard;
-  state: State;
-  events: Events;
+  private app: App;
+  private tray: MobberTray;
+  private hotkeys: Hotkeys;
+  public window: BrowserWindow;
+  public keyboard: Keyboard;
+  public state: State;
+  private events: Events;
+  private overlayTimerWindow: OverlayTimerWindow;
 
   constructor() {
     this.app = app;
   }
 
-  run() {
+  public run = () => {
     this.app.on('ready', () => {
       this.app.setAppUserModelId(process.execPath);
       if (this.app.dock) {
@@ -30,6 +32,7 @@ export class MobberApp {
       this.hotkeys = new Hotkeys();
       this.keyboard = new Keyboard();
       this.events = new Events(this);
+      this.overlayTimerWindow = new OverlayTimerWindow();
       this.events.listen();
       this.setupHotkeys();
       this.createWindow();
@@ -37,26 +40,19 @@ export class MobberApp {
         this.refresh();
       }, 1000);
     });
-  }
+  };
 
-  createWindow() {
+  private createWindow = () => {
     this.window = new BrowserWindow(options);
     this.window.loadURL('http://localhost:3000');
 
     this.recalculatePosition();
 
-    this.window.show();
     this.window.on('blur', () => this.window.hide());
-    this.window.on('ready-to-show', this.handleReadyToShow());
-  }
+    this.window.once('ready-to-show', this.toggleInterface);
+  };
 
-  private handleReadyToShow(): () => void {
-    return () => {
-      console.log('ready to show: sending state update from app');
-    };
-  }
-
-  public toggleInterface() {
+  public toggleInterface = () => {
     if (this.window.isVisible()) {
       this.window.hide();
       return;
@@ -64,9 +60,9 @@ export class MobberApp {
     this.recalculatePosition();
     this.window.show();
     this.window.focus();
-  }
+  };
 
-  private setupHotkeys() {
+  private setupHotkeys = () => {
     this.hotkeys.registerHotkeys([
       {
         keys: 'CommandOrControl+Shift+F2',
@@ -87,7 +83,7 @@ export class MobberApp {
         },
       },
     ]);
-  }
+  };
 
   private updateTrayTitle = () => {
     const title = this.state.getTitle();
@@ -100,16 +96,17 @@ export class MobberApp {
     this.pushState();
   };
 
-  public pushState() {
+  public pushState = () => {
     this.window.webContents.send('state-update', this.state.get());
-  }
+    this.overlayTimerWindow.updateState({ title: this.state.getTitle() });
+  };
 
-  private recalculatePosition() {
+  private recalculatePosition = () => {
     const { x, y } = this.tray.getBounds();
     const windowBounds = this.window.getBounds();
     const newX = x - windowBounds.width;
     const newY = y - windowBounds.height;
     console.log(`setting window position: ${newX}, ${newY}`);
     this.window.setPosition(newX, newY);
-  }
+  };
 }

@@ -80,6 +80,10 @@ export class State {
     return this.state.persons[driverIndex];
   };
 
+  private isTimeForBreak = () => {
+    return this.state.roundCounter % this.state.roundsBetweenBreaks === 0;
+  };
+
   public next = () => {
     const wasOnBreak = this.state.isBreak;
     this.state.isBreak = false;
@@ -87,8 +91,7 @@ export class State {
     if (!wasOnBreak) {
       this.state.roundCounter++;
 
-      const isTimeForBreak = this.state.roundCounter % this.state.roundsBetweenBreaks === 0;
-      this.state.isBreak = isTimeForBreak;
+      this.state.isBreak = this.isTimeForBreak();
     }
 
     this.reset();

@@ -38,9 +38,36 @@ const styles = {
 };
 
 export class AddParticipant extends React.Component {
-  private api = new Api();
-  public state: Partial<{ name: string; layout: string }> = { name: '', layout: 'Swedish-Pro' };
+  private api: Api;
+  
+  public state: Partial<{ name: string; layout: string }> = {
+    name: '',
+    layout: 'Swedish-Pro',
+  };
+  
+	constructor(props: any, state: any) {
+		super(props, state);
+		this.api = new Api();
+	}
 
+  render() {
+    return (
+      <div style={styles.form}>
+        <div style={styles.formFlags} onClick={this.toggleLayout}>
+          <FlagIcon country={this.getCountryCode()} size={20} />
+        </div>
+        <input
+          id="inputField"
+          style={styles.formInput}
+          type="text"
+          placeholder="New participant"
+          onKeyPress={this.handleFormKeydown}
+          onChange={this.handleFormChange}
+          value={this.state.name}
+        />
+      </div>
+    );
+  }
   private toggleLayout = () => {
     this.setState({
       layout: this.state.layout === 'US' ? 'Swedish-Pro' : 'US',
@@ -71,28 +98,10 @@ export class AddParticipant extends React.Component {
       layout: this.state.layout,
     });
   };
-  render() {
-    return (
-      <div style={styles.form}>
-        <div style={styles.formFlags} onClick={this.toggleLayout}>
-          {this.state.layout === 'US' ? (
-            <FlagIcon country={'US' as any} size={20} />
-          ) : (
-            <FlagIcon country={'Swedish-Pro' as any} size={20} />
-          )}
-          {/* <img onClick={() => this.setState({layout: 'US'})} src={usFlag} style={{ ...this.getFlagStyle('US'), ...styles.flag}} />
-      <img onClick={() => this.setState({layout: 'Swedish-Pro'})} src={seFlag} style={{ ...this.getFlagStyle('Swedish-Pro'), ...styles.flag}} /> */}
-        </div>
-        <input
-          id="inputField"
-          style={styles.formInput}
-          type="text"
-          placeholder="New participant"
-          onKeyPress={this.handleFormKeydown}
-          onChange={this.handleFormChange}
-          value={this.state.name}
-        />
-      </div>
-    );
+
+  private getCountryCode(): any {
+    return this.state.layout === 'US'
+      ? 'US'
+      : 'Swedish-Pro';
   }
 }

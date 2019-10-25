@@ -11,8 +11,6 @@ import { Api } from '../api/api.service';
 import { Driver } from '../driver/driver.component';
 import { Controls } from '../controls/controls.component';
 
-
-
 export class App extends Component<any, IAppState> {
   state: any;
   api: Api;

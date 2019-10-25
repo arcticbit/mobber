@@ -33,7 +33,6 @@ export class Controls extends React.Component<IControlsProps> {
             <button style={styles.button} onClick={i.action}>
               {i.content}
             </button>
-	    
 	  ))
 	}
       </div>

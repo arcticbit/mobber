@@ -6,27 +6,36 @@ interface IControlsProps {
   onPause: () => void;
 }
 
+const styles = {
+  button: {
+    flexGrow: 1,
+    height: '30px'
+  },
+  container: {
+      padding: '10px',
+      display: 'flex'
+  }
+};
+
 export class Controls extends React.Component<IControlsProps> {
   public render = () => {
-    const containerStyle = {
-      padding: '10px',
-      display: 'flex',
-    };
-    const buttonStyle = {
-      flexGrow: 1,
-      height: '30px',
-    };
+
+    const items = [
+      { action: this.props.onPreviousDriver, content: '&laquo;' },
+      { action: this.props.onPause,          content: 'pause'   },
+      { action: this.props.onNextDriver,     content: '&raquo;' },
+    ]
+
     return (
-      <div style={containerStyle}>
-        <button style={buttonStyle} onClick={this.props.onPreviousDriver}>
-          &laquo;
-        </button>
-        <button style={buttonStyle} onClick={this.props.onPause}>
-          pause
-        </button>
-        <button style={buttonStyle} onClick={this.props.onNextDriver}>
-          &raquo;
-        </button>
+      <div style={styles.container}>
+        {
+	  items.map(i => (
+            <button style={styles.button} onClick={i.action}>
+              {i.content}
+            </button>
+	    
+	  ))
+	}
       </div>
     );
   };

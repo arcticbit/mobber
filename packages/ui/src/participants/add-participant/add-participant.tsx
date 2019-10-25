@@ -1,7 +1,7 @@
 import React from 'react';
 
 import { FlagIcon } from '../../flag-icon/flag-icon.component';
-import { Api } from '../../app/api';
+import { Api } from '../../api/api.service';
 import { IPerson } from '../../../../model/person.model';
 import { KeyboardLayout } from '../../../../model/keyboard.enum';
 

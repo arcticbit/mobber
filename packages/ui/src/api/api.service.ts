@@ -29,4 +29,16 @@ export class Api {
   public updateMinutesPerBreak = (minutes: number) => {
     ipcRenderer.send('update-minutes-per-break', minutes);
   };
+
+  public subscribe = (eventName: string, callback: (data: any) => void) => {
+  ipcRenderer.on(eventName, (_: any, data: any) => callback(data));
+  };
+  public ready = () => {
+    ipcRenderer.send('ready');
+  };
+
+  public hide = () => {
+    ipcRenderer.send('hide-interface');
+  }
 }
+

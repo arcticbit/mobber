@@ -1,3 +1,16 @@
+import { IPerson } from '../../../model/person.model';
+
+export interface IAppState {
+  secondsLeft: number;
+  minutesPerRound: number;
+  minutesPerBreak: number;
+  roundsBetweenBreaks: number;
+  roundCounter: number;
+  isPaused: boolean;
+  isBreak: boolean;
+  persons: IPerson[];
+}
+
 export const initialState = {
   secondsLeft: 0,
   minutesPerRound: 0,

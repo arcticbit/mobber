@@ -2,43 +2,47 @@ import React, { Component } from 'react';
 
 import { Participants } from '../participants/list/list.component';
 import { styles } from './app.styles';
-import { initialState } from './app.state';
+import { initialState, IAppState } from './app.state';
 
 import { IMobberState } from '../../../model/mobber-state.model';
 import { IPerson } from '../../../model/person.model';
 
-import { Api } from './api';
+import { Api } from '../api/api.service';
 import { Driver } from '../driver/driver.component';
 import { Controls } from '../controls/controls.component';
 
-const { ipcRenderer } = window.require('electron');
 
-export class App extends Component<any, any> {
-  state = initialState;
-  api = new Api();
+
+export class App extends Component<any, IAppState> {
+  state: any;
+  api: Api;
+
+  get driver() {
+    return this.state.persons[this.driverIndex];
+  }
+
+  get driverIndex() {
+    return Math.abs(this.state.roundCounter) % this.state.persons.length;
+  }
+  
+  constructor(props: any, state: any) {
+    super(props, state);
+    this.state = initialState;
+    this.api = new Api();
+  }
 
   componentDidMount() {
-    window.addEventListener('keydown', e => {
-      if (e.key !== 'Escape') {
-        return;
-      }
+    this.listenForEscapeKey();
+    this.listenForStateChanges();
+    this.ready();
+  }
 
-      ipcRenderer.send('hide-interface');
-    });
-    ipcRenderer.on('state-update', (_event: any, state: IMobberState) => {
-      this.setState({
-        ...state,
-      });
-    });
-    ipcRenderer.send('ready', null);
+  ready() {
+    this.api.ready();
     (document.getElementById('inputField') as any).focus();
   }
 
   render() {
-    console.log('state render', this.state);
-    const currentDriverIndex = Math.abs(this.state.roundCounter) % this.state.persons.length;
-    const driver = this.state.persons[currentDriverIndex];
-
     return (
       <div className="App-header" style={styles.wrapper}>
         <div>
@@ -52,7 +56,7 @@ export class App extends Component<any, any> {
             />
           ) : (
             <Driver
-              title={driver ? driver.name : 'Mobber'}
+              title={this.driver ? this.driver.name : 'Mobber'}
               secondsLeft={this.state.secondsLeft}
               minutesPerRound={this.state.minutesPerRound}
               onMinutesPerRoundChanged={this.handleMinutesPerRoundChanged}
@@ -65,7 +69,7 @@ export class App extends Component<any, any> {
             participants={this.state.persons}
             onDelete={this.handleDelete}
             onDriverPromotion={this.handleDriverPromotion}
-            currentDriverIndex={currentDriverIndex}
+            driverIndex={this.driverIndex}
           />
         </div>
         <div style={{ marginTop: 'auto' }}>
@@ -78,6 +82,24 @@ export class App extends Component<any, any> {
       </div>
     );
   }
+
+  private listenForStateChanges() {
+    this.api.subscribe('state-update', this.handleStateChange);
+  }
+
+
+  private listenForEscapeKey() {
+    window.addEventListener('keydown', e => {
+      if (e.key !== 'Escape') {
+        return;
+      }
+      this.api.hide();
+    });
+  }
+
+  private handleStateChange = (s: IMobberState) => {
+    this.setState({ ...s });
+  };
 
   private handleMinutesPerRoundChanged = (minutes: number) => {
     this.api.updateMinutesPerRound(minutes);
@@ -107,4 +129,5 @@ export class App extends Component<any, any> {
     this.api.remove(person);
   };
 }
+
 export default App;

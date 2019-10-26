@@ -6,7 +6,7 @@
   "private": true,
   "scripts": {
     "test": "jest",
-    "start": "wait-on http://localhost:3000 && nodemon --watch ./src -e ts,js,json --exec \"electron\" ."
+    "start": "nodemon --watch ./src -e ts,js,json --exec \"electron\" ."
   },
   "dependencies": {
     "@types/node": "^12.7.8",

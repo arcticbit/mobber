@@ -1,11 +1,13 @@
-import { app, BrowserWindow, App } from 'electron';
-import { MobberTray } from '../tray/tray.component';
-import { Hotkeys } from '../hotkeys/hotkeys.service';
-import { State } from '../state/state';
+
 import { Events } from '../events/events';
 import { options } from './app.options';
 import { Keyboard } from '../keyboard/keyboard.service';
 import { OverlayTimerWindow } from '../overlay-timer-window/overlay-timer-window';
+import { app, BrowserWindow, App } from "electron";
+import { MobberTray } from "../tray/tray.component";
+import { Hotkeys } from "../hotkeys/hotkeys.service";
+import { State } from "../state/state";
+import * as path from 'path';
 
 export class MobberApp {
   private app: App;
@@ -44,8 +46,8 @@ export class MobberApp {
 
   private createWindow = () => {
     this.window = new BrowserWindow(options);
-    this.window.loadURL('http://localhost:3000');
-
+    const uiPath = path.join(__dirname, '../../../ui/build/index.html')
+    this.window.loadFile(uiPath);
     this.recalculatePosition();
 
     this.window.on('blur', () => this.window.hide());

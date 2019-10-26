@@ -7,8 +7,7 @@
   "license": "MIT",
   "private": true,
   "scripts": {
-    "start": "concurrently \"cross-env BROWSER=none yarn workspace @mobber/ui start\" \"yarn workspace @mobber/app start\"",
-    "lint": "eslint packages/**/*.{js,ts,tsx} --fix"
+    "start": "concurrently \"yarn workspace @mobber/ui build:watch\" \"yarn workspace @mobber/app start\""
   },
   "workspaces": [
     "packages/*"
@@ -28,5 +27,9 @@
     "eslint-plugin-react": "^7.16.0",
     "eslint-plugin-react-hooks": "^2.1.2",
     "prettier": "^1.18.2"
+  },
+  "devDependencies": {
+    "electron-builder": "^21.2.0",
+    "pkg": "^4.4.0"
   }
 }

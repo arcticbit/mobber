@@ -26,7 +26,7 @@
 
       .blink {
         animation: blinker 0.2s linear infinite;
-        background: rgba(255, 0, 0, 0.5);
+        background: rgba(255, 0, 0, 0.5) !important;
       }
 
       @keyframes blinker {
@@ -42,6 +42,7 @@
   <script>
     const { ipcRenderer } = window.require('electron');
 
+    const newDriverSound = new Audio(__dirname + '/poker-chips.wav');
     let oldState = { title: '', timer: '' };
 
     ipcRenderer.on('state-update', (_event, state) => {
@@ -55,6 +56,9 @@
         setTimeout(() => {
           titleEl.classList.remove('blink');
         }, 1000);
+
+        newDriverSound.currentTime = 0;
+        newDriverSound.play();
       }
 
       ipcRenderer.send('update-window-size', { width, height });

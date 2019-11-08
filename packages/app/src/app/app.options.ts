@@ -5,7 +5,7 @@ export const options: BrowserWindowConstructorOptions = {
   height: 300,
   minWidth: 400,
   minHeight: 300,
-  show: false,
+  show: true,
   frame: false,
   fullscreenable: false,
   resizable: true,
@@ -14,6 +14,6 @@ export const options: BrowserWindowConstructorOptions = {
     nodeIntegration: true,
     backgroundThrottling: false,
   },
-  skipTaskbar: true,
+  skipTaskbar: false,
   alwaysOnTop: true,
 };

@@ -1,11 +1,13 @@
 import { Notification } from 'electron';
-import { KeyboardLayout } from '../../../model/keyboard.enum';
 import { ScrollDirection } from '../../../model/scroll-direction.model';
 import { IMobberState } from '../../../model/mobber-state.model';
 import { MobberApp } from '../app';
 import { IPerson } from '../../../model/person.model';
+import * as fs from 'fs';
 
 export class State {
+  private readonly stateFile = 'state.json';
+
   public getTimerLabel = () => {
     const secondsLeft = this.getSecondsLeft();
     const minutes = Math.floor(secondsLeft / 60);
@@ -43,7 +45,9 @@ export class State {
     this.state.isPaused = !this.state.isPaused;
   };
 
-  constructor(private readonly parent: MobberApp) {}
+  constructor(private readonly parent: MobberApp) {
+    this.loadState();
+  }
 
   public get(): IMobberState {
     return this.state;
@@ -59,6 +63,20 @@ export class State {
       ...person,
       scroll: ScrollDirection.Natural,
     });
+
+    this.saveState();
+  }
+
+  private saveState() {
+    fs.writeFileSync(this.stateFile, JSON.stringify(this.state));
+  }
+
+  private loadState() {
+    if (fs.existsSync(this.stateFile)) {
+      const savedState = fs.readFileSync(this.stateFile, { encoding: 'utf-8' });
+      this.state = JSON.parse(savedState);
+      console.log('loaded state');
+    }
   }
 
   private hasPerson(person: IPerson) {
@@ -67,6 +85,7 @@ export class State {
 
   public removePerson(person: IPerson) {
     this.state.persons = this.state.persons.filter(p => p.name !== person.name);
+    this.saveState();
   }
 
   public setDriverByName(name: string) {
@@ -142,11 +161,13 @@ export class State {
   public updateMinutesPerRound = minutes => {
     this.state.minutesPerRound = minutes;
     this.resetTimer();
+    this.saveState();
   };
 
   public updateMinutesPerBreak = minutes => {
     this.state.minutesPerBreak = minutes;
     this.resetTimer();
+    this.saveState();
   };
 
   public tick = () => {
@@ -167,17 +188,6 @@ export class State {
     roundCounter: 0,
     isPaused: false,
     isBreak: false,
-    persons: [
-      {
-        name: 'Daniel',
-        language: KeyboardLayout.English,
-        scroll: ScrollDirection.Natural,
-      },
-      {
-        name: 'Simon',
-        language: KeyboardLayout.Swedish,
-        scroll: ScrollDirection.Natural,
-      },
-    ],
+    persons: [],
   };
 }

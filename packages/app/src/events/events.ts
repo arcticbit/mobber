@@ -10,7 +10,6 @@ export class Events {
     ipcMain.on('ready', () => this.handleReady());
     ipcMain.on('new-participant', this.handleEvent(this.handleAddParticipant));
     ipcMain.on('remove-participant', this.handleEvent(this.handleRemoveParticipant));
-    ipcMain.on('new-driver', this.handleEvent(this.handleNewDriver));
     ipcMain.on('hide-interface', this.handleEvent(this.handleHideInterface));
     ipcMain.on('previous-driver', this.handleEvent(this.handlePreviousDriver));
     ipcMain.on('next-driver', this.handleEvent(this.handleNextDriver));
@@ -18,13 +17,17 @@ export class Events {
     ipcMain.on('update-minutes-per-round', this.handleEvent(this.handleUpdateMinutesPerRound));
     ipcMain.on('update-minutes-per-break', this.handleEvent(this.handleUpdateMinutesPerBreak));
     ipcMain.on('update-rounds-between-breaks', this.handleEvent(this.handleUpdateRoundsBetweenBreaks));
+    ipcMain.on('move-participant', this.handleEvent(this.handleMoveParticipant));
   }
 
   private handleEvent = (eventHandler: (...args: any[]) => void) => {
     return (event: IpcMainEvent, ...args: any[]) => {
       eventHandler(...args);
-      this.parent.pushState();
     };
+  };
+
+  private handleMoveParticipant = ({ dragIndex, hoverIndex }) => {
+    this.parent.state.moveParticipant(dragIndex, hoverIndex);
   };
 
   private handleUpdateRoundsBetweenBreaks = (roundsBetweenBreaks: number) => {
@@ -54,11 +57,6 @@ export class Events {
     this.parent.state.next();
   };
 
-  private handleNewDriver = (driverName: string) => {
-    console.log('renderer: new-driver ', driverName);
-    this.parent.state.setDriverByName(driverName);
-  };
-
   private handleRemoveParticipant = (person: IPerson) => {
     this.parent.state.removePerson(person);
   };
@@ -68,8 +66,8 @@ export class Events {
   };
 
   private handleReady = () => {
-    console.log('renderer: ready');
-    this.parent.pushState();
+    console.log('ready');
+    this.parent.pushState(this.parent.state.get());
   };
 
   private handleHideInterface = () => {

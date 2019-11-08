@@ -68,6 +68,7 @@ export class State {
   }
 
   private saveState() {
+    console.log('saved state');
     fs.writeFileSync(this.stateFile, JSON.stringify(this.state));
   }
 
@@ -86,12 +87,6 @@ export class State {
   public removePerson(person: IPerson) {
     this.state.persons = this.state.persons.filter(p => p.name !== person.name);
     this.saveState();
-  }
-
-  public setDriverByName(name: string) {
-    const driver = this.state.persons.find(x => x.name === name);
-    const rest = this.state.persons.filter(x => x.name !== name);
-    this.state.persons = [driver, ...rest];
   }
 
   public isBreak = () => {
@@ -189,5 +184,12 @@ export class State {
     isPaused: false,
     isBreak: false,
     persons: [],
+  };
+
+  public moveParticipant = (dragIndex: number, hoverIndex: number) => {
+    const dragPerson = this.state.persons[dragIndex];
+    this.state.persons.splice(dragIndex, 1);
+    this.state.persons.splice(hoverIndex, 0, dragPerson);
+    this.saveState();
   };
 }

@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 
-import { Participants } from '../participants/list/list.component';
+import ParticipantList from '../participants/list/list.component';
 import { styles } from './app.styles';
 import { initialState, IAppState } from './app.state';
 
@@ -10,6 +10,8 @@ import { IPerson } from '../../../model/person.model';
 import { Api } from '../api/api.service';
 import { Driver } from '../driver/driver.component';
 import { Controls } from '../controls/controls.component';
+import { DndProvider } from 'react-dnd';
+import HTML5Backend from 'react-dnd-html5-backend';
 
 export class App extends Component<any, IAppState> {
   state: any;
@@ -36,6 +38,7 @@ export class App extends Component<any, IAppState> {
   }
 
   ready() {
+    console.log('app mounted');
     this.api.ready();
     (document.getElementById('inputField') as any).focus();
   }
@@ -43,55 +46,66 @@ export class App extends Component<any, IAppState> {
   render() {
     return (
       <div className="App-header" style={styles.wrapper}>
-        <div>
-          {this.state.isBreak ? (
-            <Driver
-              title="Break"
-              secondsLeft={this.state.secondsLeft}
-              minutesPerRound={this.state.minutesPerBreak}
-              onMinutesPerRoundChanged={this.handleMinutesPerBreakChanged}
-              isPaused={this.state.isPaused}
+        <DndProvider backend={HTML5Backend}>
+          <div>
+            {this.state.isBreak ? (
+              <Driver
+                title="Breaksaa"
+                secondsLeft={this.state.secondsLeft}
+                minutesPerRound={this.state.minutesPerBreak}
+                onMinutesPerRoundChanged={this.handleMinutesPerBreakChanged}
+                isPaused={this.state.isPaused}
+              />
+            ) : (
+              <Driver
+                title={this.driver ? this.driver.name : 'Mobber'}
+                secondsLeft={this.state.secondsLeft}
+                minutesPerRound={this.state.minutesPerRound}
+                onMinutesPerRoundChanged={this.handleMinutesPerRoundChanged}
+                isPaused={this.state.isPaused}
+              />
+            )}
+          </div>
+          <div>
+            <ParticipantList
+              participants={this.state.persons}
+              onDelete={this.handleDelete}
+              driverIndex={this.driverIndex}
+              onMoveParticipant={this.handleMoveParticipant}
             />
-          ) : (
-            <Driver
-              title={this.driver ? this.driver.name : 'Mobber'}
-              secondsLeft={this.state.secondsLeft}
-              minutesPerRound={this.state.minutesPerRound}
-              onMinutesPerRoundChanged={this.handleMinutesPerRoundChanged}
-              isPaused={this.state.isPaused}
+          </div>
+          <div>
+            <label>
+              Rounds between breaks
+              <input
+                type="number"
+                min={0}
+                max={100}
+                value={this.state.roundsBetweenBreaks}
+                onChange={e => this.api.updateRoundsBetweenBreaks(parseInt(e.currentTarget.value))}
+              />
+            </label>
+          </div>
+          <div style={{ marginTop: 'auto' }}>
+            <Controls
+              onPreviousDriver={this.handlePreviousDriver}
+              onNextDriver={this.handleNextDriver}
+              onPause={this.handlePause}
             />
-          )}
-        </div>
-        <div>
-          <Participants
-            participants={this.state.persons}
-            onDelete={this.handleDelete}
-            onDriverPromotion={this.handleDriverPromotion}
-            driverIndex={this.driverIndex}
-          />
-        </div>
-        <div>
-          <label>
-            Rounds between breaks
-            <input
-              type="number"
-              min={0}
-              max={100}
-              value={this.state.roundsBetweenBreaks}
-              onChange={e => this.api.updateRoundsBetweenBreaks(parseInt(e.currentTarget.value))}
-            />
-          </label>
-        </div>
-        <div style={{ marginTop: 'auto' }}>
-          <Controls
-            onPreviousDriver={this.handlePreviousDriver}
-            onNextDriver={this.handleNextDriver}
-            onPause={this.handlePause}
-          />
-        </div>
+          </div>
+        </DndProvider>
       </div>
     );
   }
+
+  private handleMoveParticipant = (dragIndex: number, hoverIndex: number) => {
+    const newList = [...this.state.persons];
+    const dragPerson = this.state.persons[dragIndex];
+    newList.splice(dragIndex, 1);
+    newList.splice(hoverIndex, 0, dragPerson);
+    this.setState({ persons: newList });
+    this.api.moveParticipant(dragIndex, hoverIndex);
+  };
 
   private listenForStateChanges() {
     this.api.subscribe('state-update', this.handleStateChange);
@@ -106,8 +120,8 @@ export class App extends Component<any, IAppState> {
     });
   }
 
-  private handleStateChange = (s: IMobberState) => {
-    this.setState({ ...s });
+  private handleStateChange = (state: IMobberState) => {
+    this.setState({ ...state });
   };
 
   private handleMinutesPerRoundChanged = (minutes: number) => {
@@ -128,10 +142,6 @@ export class App extends Component<any, IAppState> {
 
   private handleNextDriver = () => {
     this.api.nextDriver();
-  };
-
-  private readonly handleDriverPromotion = (person: IPerson) => {
-    this.api.promote(person);
   };
 
   private handleDelete = (person: IPerson) => {

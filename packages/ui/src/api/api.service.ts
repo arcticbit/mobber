@@ -2,9 +2,6 @@ import { IPerson } from '../../../model/person.model';
 const { ipcRenderer } = window.require('electron');
 
 export class Api {
-  public promote(person: IPerson) {
-    ipcRenderer.send('new-driver', person.name);
-  }
   public add(person: IPerson) {
     ipcRenderer.send('new-participant', person);
   }
@@ -43,4 +40,8 @@ export class Api {
   public hide = () => {
     ipcRenderer.send('hide-interface');
   };
+
+  public moveParticipant(dragIndex: number, hoverIndex: number) {
+    ipcRenderer.send('move-participant', { dragIndex, hoverIndex });
+  }
 }

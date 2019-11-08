@@ -4,5 +4,6 @@ export interface IParticipantProps {
   person: IPerson;
   isCurrentDriver: boolean;
   onDelete: (person: any) => void;
-  onDriverPromotion: (person: any) => void;
+  moveParticipant: (dragIndex: number, hoverIndex: number) => void;
+  index: number;
 }

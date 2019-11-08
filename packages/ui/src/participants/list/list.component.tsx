@@ -1,28 +1,43 @@
 import './list.component.scss';
 
-import React from 'react';
+import React  from 'react';
 
-import { Participant } from '../participant/participant.component';
 import { AddParticipant } from '../add-participant/add-participant';
+import Participant from '../participant/participant.component';
+import { IPerson } from '../../../../model/person.model';
 
-export class Participants extends React.Component<any, any> {
-  render() {
-    const participants = this.props.participants.map((person: any, i: number) => {
-      return (
-        <Participant
-          person={person}
-          onDelete={this.props.onDelete}
-          onDriverPromotion={this.props.onDriverPromotion}
-          isCurrentDriver={i === this.props.currentDriverIndex}
-        />
-      );
-    });
-
-    return (
-      <div className="persons">
-        {participants}
-        <AddParticipant />
-      </div>
-    );
-  }
+interface IParticipantListProps {
+  participants: Array<IPerson>;
+  onDelete: (person: IPerson) => void;
+  onMoveParticipant: (dragIndex: number, hoverIndex: number) => void;
+  driverIndex: number;
 }
+
+const ParticipantList: React.FC<IParticipantListProps> = ({
+  participants,
+  onDelete,
+  driverIndex,
+  onMoveParticipant,
+}) => {
+  const renderParticipant = (person: any, index: number) => {
+    return (
+      <Participant
+        key={person.name}
+        person={person}
+        onDelete={onDelete}
+        isCurrentDriver={index === driverIndex}
+        moveParticipant={onMoveParticipant}
+        index={index}
+      />
+    );
+  };
+
+  return (
+    <div className="persons">
+      {participants.map(renderParticipant)}
+      <AddParticipant />
+    </div>
+  );
+};
+
+export default ParticipantList;

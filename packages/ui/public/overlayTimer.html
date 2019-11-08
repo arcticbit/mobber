@@ -57,8 +57,8 @@
           titleEl.classList.remove('blink');
         }, 1000);
 
-        newDriverSound.currentTime = 0;
-        newDriverSound.play();
+        // newDriverSound.currentTime = 0;
+        // newDriverSound.play();
       }
 
       ipcRenderer.send('update-window-size', { width, height });

@@ -1,13 +1,13 @@
-
 import { Events } from '../events/events';
 import { options } from './app.options';
 import { Keyboard } from '../keyboard/keyboard.service';
 import { OverlayTimerWindow } from '../overlay-timer-window/overlay-timer-window';
-import { app, BrowserWindow, App } from "electron";
-import { MobberTray } from "../tray/tray.component";
-import { Hotkeys } from "../hotkeys/hotkeys.service";
-import { State } from "../state/state";
+import { app, BrowserWindow, App } from 'electron';
+import { MobberTray } from '../tray/tray.component';
+import { Hotkeys } from '../hotkeys/hotkeys.service';
+import { State } from '../state/state';
 import * as path from 'path';
+import { IMobberState } from '../../../model/mobber-state.model';
 
 export class MobberApp {
   private app: App;
@@ -46,7 +46,7 @@ export class MobberApp {
 
   private createWindow = () => {
     this.window = new BrowserWindow(options);
-    const uiPath = path.join(__dirname, '../../../ui/build/index.html')
+    const uiPath = path.join(__dirname, '../../../ui/build/index.html');
     this.window.loadFile(uiPath);
     this.recalculatePosition();
 
@@ -95,11 +95,22 @@ export class MobberApp {
   private refresh = () => {
     this.state.tick();
     this.updateTrayTitle();
-    this.pushState();
+    this.pushTick();
   };
 
-  public pushState = () => {
-    this.window.webContents.send('state-update', this.state.get());
+  private pushTick = () => {
+    const { secondsLeft, roundCounter, isBreak } = this.state.get();
+    const tickState = {
+      secondsLeft,
+      roundCounter,
+      isBreak,
+    };
+    this.pushState(tickState);
+  };
+
+  public pushState = (state: Partial<IMobberState>) => {
+    console.log('pushed state', state);
+    this.window.webContents.send('state-update', state);
     this.overlayTimerWindow.updateState({ timer: this.state.getTimerLabel(), title: this.state.getDriverLabel() });
   };
 

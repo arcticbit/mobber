@@ -2,6 +2,27 @@
   "name": "@mobber/ui",
   "version": "0.1.0",
   "private": true,
+  "main": "public/electron.js",
+  "author": {
+    "name": "Your Name",
+    "email": "your.email@domain.com",
+    "url": "https://your-website.com"
+  },
+  "build": {
+    "appId": "com.my-website.my-app",
+    "productName": "MyApp",
+    "copyright": "Copyright © 2019 ${author}",
+    "mac": {
+      "category": "public.app-category.utilities"
+    },
+    "files": [
+      "build/**/*",
+      "node_modules/**/*"
+    ],
+    "directories": {
+      "buildResources": "assets"
+    }
+  },
   "dependencies": {
     "@types/jest": "24.0.18",
     "@types/node": "12.7.3",
@@ -18,11 +39,14 @@
     "typescript": "3.6.2"
   },
   "scripts": {
-    "start": "react-scripts start",
-    "build": "react-scripts build",
-    "build:watch": "nodemon --watch ./src -e ts,tsx,js,json --exec \"react-scripts build\"",
-    "test": "react-scripts test",
-    "eject": "react-scripts eject"
+    "start": "rescripts start",
+    "build": "rescripts build",
+    "test": "rescripts test",
+    "eject": "react-scripts eject",
+    "electron-dev": "concurrently \"cross-env BROWSER=none yarn start\" \"nodemon --watch ./src/electron -e ts,js,json --exec 'electron .'\"",
+    "postainstall": "electron-builder install-app-deps",
+    "preelectron-pack": "yarn build",
+    "electron-pack": "build -mw"
   },
   "eslintConfig": {
     "extends": "react-app"
@@ -39,5 +63,14 @@
       "last 1 firefox version",
       "last 1 safari version"
     ]
+  },
+  "devDependencies": {
+    "@rescripts/cli": "^0.0.13",
+    "@rescripts/rescript-env": "^0.0.11",
+    "cross-env": "^6.0.3",
+    "electron": "^6.1.4",
+    "electron-builder": "^22.1.0",
+    "ts-node": "^8.4.1",
+    "wait-on": "^3.3.0"
   }
 }

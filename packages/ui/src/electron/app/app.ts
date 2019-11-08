@@ -2,15 +2,15 @@ import { Events } from '../events/events';
 import { options } from './app.options';
 import { Keyboard } from '../keyboard/keyboard.service';
 import { OverlayTimerWindow } from '../overlay-timer-window/overlay-timer-window';
-import { app, BrowserWindow, App } from 'electron';
+import { app, BrowserWindow } from 'electron';
 import { MobberTray } from '../tray/tray.component';
 import { Hotkeys } from '../hotkeys/hotkeys.service';
 import { State } from '../state/state';
 import * as path from 'path';
-import { IMobberState } from '../../../model/mobber-state.model';
+import isDev from "./isdev";
+import {IMobberState} from "../../../../model/mobber-state.model";
 
 export class MobberApp {
-  private app: App;
   private tray: MobberTray;
   private hotkeys: Hotkeys;
   public window: BrowserWindow;
@@ -19,15 +19,11 @@ export class MobberApp {
   private events: Events;
   private overlayTimerWindow: OverlayTimerWindow;
 
-  constructor() {
-    this.app = app;
-  }
-
   public run = () => {
-    this.app.on('ready', () => {
-      this.app.setAppUserModelId(process.execPath);
-      if (this.app.dock) {
-        this.app.dock.hide();
+    app.on('ready', () => {
+      app.setAppUserModelId(process.execPath);
+      if (app.dock) {
+        app.dock.hide();
       }
       this.tray = new MobberTray(this);
       this.state = new State(this);
@@ -46,8 +42,14 @@ export class MobberApp {
 
   private createWindow = () => {
     this.window = new BrowserWindow(options);
-    const uiPath = path.join(__dirname, '../../../ui/build/index.html');
-    this.window.loadFile(uiPath);
+    this.window.loadURL(
+      isDev ? 'http://localhost:3000' : `file://${path.join(__dirname, '../build/index.html')}`,
+    );
+    if (isDev) {
+      // Open the DevTools.
+      // BrowserWindow.addDevToolsExtension('<location to your react chrome extension>');
+      this.window.webContents.openDevTools();
+    }
     this.recalculatePosition();
 
     this.window.on('blur', () => this.window.hide());

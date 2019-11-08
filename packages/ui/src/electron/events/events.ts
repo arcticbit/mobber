@@ -1,7 +1,7 @@
 import { ipcMain } from 'electron';
-import { IPerson } from '../../../model/person.model';
 import { MobberApp } from '../app';
 import IpcMainEvent = Electron.IpcMainEvent;
+import {IPerson} from "../../../../model/person.model";
 
 export class Events {
   constructor(private readonly parent: MobberApp) {}

@@ -7,7 +7,7 @@
   "license": "MIT",
   "private": true,
   "scripts": {
-    "start": "concurrently \"yarn workspace @mobber/ui build:watch\" \"yarn workspace @mobber/app start\""
+    "start": "yarn workspace @mobber/ui start"
   },
   "workspaces": [
     "packages/*"

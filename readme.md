@@ -1,3 +1,7 @@
+> # ⚠️ Maintainer wanted 
+>
+> As I, @simskij, have lost interest in this project, and it's currently only generating dependabot reports every now and then, I'll do no further development on it. If you'd like to continue maintaining this project, tweet me at [@0x12b](https://twitter.com/0x12b).
+
 # Mobber
 
 Mobber is a mob programming tool written in typescript using electron and reactjs.
